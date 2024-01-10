@@ -31,7 +31,7 @@ From Chrome Web Store (coming soon...)
 From sources.
 
 1. Clone/Download this repo
-2. Open `Manage extensions`` in Chrome.
+2. Open `Manage extensions` in Chrome.
 3. Turn on developer mode.
 4. Click `Load Unpacked` and select `extension` directory from this repository.
 Done!
