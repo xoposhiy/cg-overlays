@@ -9,21 +9,20 @@ and the overlay will be added to the game visualizer.
 
 ![screenshot2](screenshot2.png)
 
-## Example of stderr
+## Stderr output sample
 
-This output:
 ```
 @r 0 7721 4529 8508 red
 @fr 5120 7721 9999 8508 rgba(0,255,0,0.5)
 @tc 4885 9920 200 #0000FF
 ```
 
-Will draw:
+This stderr output will draw:
 1. red rectangle
-2. green semirtansparent filled rectangle
+2. green semitransparent filled rectangle
 3. blue circle with contour and semitransparent fill.
 
-[More details](extension/help.html)
+Click the extension icon to get [more details](extension/help.html)
 
 ## How to install extension
 
@@ -46,9 +45,9 @@ Contribute this rules to [extension/knownGames.js](extension/knownGames.js).
 
 ## TODO
 
-[ ] Handle resize event
-[ ] Add instruction to draw trajectory of entities.  
-[ ] On the last micro-frame of the frame show the next frame overlay to decrease confusion during debugging.
+* Handle resize event
+* Add instruction to draw trajectory of entities.  
+* On the last micro-frame of the frame show the next frame overlay to decrease confusion during debugging.
 
 ## Icons
 
