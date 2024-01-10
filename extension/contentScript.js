@@ -32,8 +32,9 @@ function main() {
 			if (onOffButton && !onOffButton.checked) return;
 			if ("viewerOptions" === t.data.type){
 				if (isPlayerWindow()){
-					console.log("GameName: " + t.data.gameName);
 					gameName = t.data.gameName; 
+					console.log("GameName: " + gameName);
+					console.log("Viewport: " + (viewports[gameName] || defaultViewport));
 					initialize();
 				}
 				else{
@@ -42,7 +43,7 @@ function main() {
 			}
 			else if ("frames" === t.data.type && t.data.gameInfo){
 				gameFrames = groupFrames(t.data.gameInfo.frames);
-				console.log(gameFrames)
+				console.log("Game Frames: ", gameFrames);
 			} else if ("progress" == t.data.type){
 				if (isPlayerWindow()){
 					renderOverlay(t.data.frame);
@@ -51,8 +52,6 @@ function main() {
 					window.frames[0].postMessage(t.data, "*");
 				}
 			}
-			else
-				console.log(t.data);
 		}));
 
 	function deInitialize(){
@@ -117,7 +116,6 @@ function main() {
 			.flat()
 			.filter(line => line && line.startsWith("@"));
 		instructions.unshift(viewports[gameName] || defaultViewport);
-		console.log(instructions);
 		for(let instruction of instructions){
 			console.log(instruction);
 			const firstSpaceIndex = instruction.indexOf(' ');
