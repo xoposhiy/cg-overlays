@@ -1,0 +1,31 @@
+{
+	"manifest_version": 3,
+	"name": "CG Overlays",
+	"description": "Codingame with your own overlays in visualizer",
+	"version": "1.0",
+	"icons": {
+		"16": "layers16.png",
+		"32": "layers32.png",
+		"128": "layers128.png",
+		"512": "layers512.png"
+	},
+	"action": {
+		"default_popup": "help.html",
+		"default_icon": {
+			"16": "layers16.png",
+			"32": "layers32.png",
+			"128": "layers128.png",
+			"512": "layers512.png"
+		}
+	},
+	"permissions": ["activeTab", "scripting"],
+	"content_scripts": [
+		{
+		  "matches": ["https://www.codingame.com/ide/*", "https://www.codingame.com/replay/*", "https://static.codingame.com/*", "https://www.codingame.com/share-replay/*"],
+		  "js": ["knownGames.js", "contentScript.js"],
+		  "all_frames" : true
+		}
+	],
+	"homepage_url": "https://github.com/xoposhiy/cg-overlays",
+	"author": "Pavel Egorov @xoposhiy"
+}
