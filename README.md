@@ -23,12 +23,12 @@ Will draw:
 2. green semirtansparent filled rectangle
 3. blue circle with contour and semitransparent fill.
 
-Coordinates are in-game logical coordinates.
+[More details](extension/help.html)
 
 ## Contribute
 
 To convert in-game coordinates to physical, we need the conversion rules.
-Contribute this rules to `[extension/knownGames.js](extension/knownGames.js)`.
+Contribute this rules to [extension/knownGames.js](extension/knownGames.js).
 
 ## TODO
 
