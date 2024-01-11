@@ -2,74 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CG Overlays Help</title>
+  <title>CG Overlays</title>
   <style>
     body {
       font-family: sans-serif;
       font-size: 14px;
     }
-    code {
-      background-color: lightgoldenrodyellow;
-    }
   </style>
 </head>
 <body style="width:700px">
   <h2>What is CG Overlays?</h2>
-  <p>It adds overlays to the Codingame IDE to help you solve their programming challenges.</p>
+  <p>It adds overlays to the codingame.com IDE to help you solve their programming challenges.</p>
 
-  <h2>How to use?</h2>
-  <p>
-    You bot should output to stderr special instructions, which will be interpreted by the extension,
-    and the overlay will be added to the game visualizer.
-  </p>
-  <p>
-    Each instruction should be on a separate line and have the following format:
-    <code>@[InstructionName] [args]</code>
-  </p>
-  <p>
-    The following instructions are supported:
-    <ul>
-      <li><code>@vp [left] [top] [right] [bottom]</code> - sets the viewport. Specify logical coordinates for left-top and right-bottom corners of visualizer screen. You don't need it for <a href="https://github.com/xoposhiy/cg-overlays/blob/main/extension/knownGames.js">known games</a>.</li>
-      <li><code>@r [left] [top] [right] [bottom] [color]</code> - draws rectangle</li>
-      <li><code>@fr [left] [top] [right] [bottom] [color]</code> - draws filled rectangle</li>
-      <li><code>@tr [left] [top] [right] [bottom] [color]</code> - draws rectangle with semitransparent fill</li>
-      <li><code>@c [x] [y] [radius] [color]</code> - draws a circle</li>
-      <li><code>@fc [x] [y] [radius] [color]</code> - draws a filled circle</li>
-      <li><code>@tc [x] [y] [radius] [color]</code> - draws a circle with semitransparent fill</li>
-      <li><code>@l [color] [x1] [y1] [x2] [y2] ...</code> - draws a lines path</li>
-      <li><code>@txt [left] [bottom] [color] [text]</code> - draws a text</li>
-      <li><code>@font [size] [font-name]</code> - sets font for @txt. Font size is for 800px width canvas, for other sizes font will be rescaled</li>
-      <li><code>@clr</code> - clears all overlays</li>
-    </ul>
-    All coordinates are logical coordinates, as in the game rules.
-  </p>
-  <p>
-    Color can be specified in one of the following formats (but no spaces please!):
-    <ul>
-      <li><code>#RRGGBB</code> - hex color</li>
-      <li><code>rgb(R,G,B)</code> - rgb color</li>
-      <li><code>rgba(R,G,B,A)</code> - rgba color</li>
-      <li><code>colorName</code> - color name</li>
-      <li>other formats supported by html canvas '2d' context</li>
-    </ul>
-  </p>
-  <h2>Constrains</h2>
-  <p>
-    It works on game replay page, and IDE page.
-  </p>
-  <p>
-    Stderr is available for your own bots only. That's why no overlays for other players' bots.
-  </p>
-  <p>
-    Some games may not work properly because the wrong viewport.
-    You can set it manually with <code>@vp</code> instruction.
-    But would be better to make a pull-request with proper changes in <code><a href="https://github.com/xoposhiy/cg-overlays/blob/main/extension/knownGames.js">knownGames.js</a></code>.
-  </p>
-  <h2>Turning off</h2>
-  <p>
-    Small checkbox in top-left corder of visualizer will disable overlays.
-  </p>
-  <h2>Github repo</h2>
-  <p><a href="https://github.com/xoposhiy/cg-overlays">https://github.com/xoposhiy/cg-overlays</a></p>
+  <p>See details in <a target="_blank" href="https://github.com/xoposhiy/cg-overlays">GitHub repo readme</a></p>.
 </body>
 </html>
