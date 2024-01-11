@@ -43,7 +43,22 @@ Wrong color format will not be reported, but will be ignored.
 
 Syntax errors will be reported on the BSOD :)
 
-## Constrains
+### Sample stderr output
+
+```
+@o 0.7
+@fr 0 0 1000 1000 red
+@r 1000 0 2000 1000 #00FFFF
+@tr 1000 0 2000 1000 rgb(0,255,255)
+@l white 8000 8000 10000 8000 9000 9000 8000 8000
+@c 8000 8000 1000 red
+@fc 8000 8000 500 rgba(255,255,0,0.3)
+@tc 10000 1000 500 200 black
+@font monospace
+@txt 10000 2000 pink 40 Hello world
+```
+
+## Constraints
 It works on game replay page, and IDE page. Refresh page if it is not working.
 
 Stderr is available for your own bots only. That's why no overlays for other players' bots.
