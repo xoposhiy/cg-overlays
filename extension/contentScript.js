@@ -124,6 +124,7 @@ function main() {
 			let argTypes = ctx[fn + '_types'];
 			if (!argTypes) throw new Error("No arg types for " + fn);
 			try {
+				console.log(fn, args, argTypes);
 				f.apply(ctx, parse(args, argTypes));
 			}
 			catch(e) {
@@ -206,6 +207,7 @@ function main() {
 			scale: 1.0,
 			shiftX: 0.0,
 			shiftY: 0.0,
+			fontName: "Arial",
 			canvas: canvas,
 			ctx: canvas.getContext("2d"),
 			clr: function(){
@@ -283,11 +285,16 @@ function main() {
 				}
 				this.ctx.stroke();
 			},
-			txt_types: "int int color text",
-			txt: function(x, y, color, text){
+			txt_types: "int int color float text",
+			txt: function(x, y, color, fontSize, text){
 				this.ctx.fillStyle = color;
-				this.ctx.font = "10px Arial";
+				let fs = fontSize * this.canvas.clientWidth / 800;
+				this.ctx.font = fs + "px " + this.fontName;
 				this.ctx.fillText(text, this.scale*(x+this.shiftX), this.scale*(y+this.shiftY));
+			},
+			font_types: "text",
+			font: function(name){
+				this.fontName = name || "Arial";
 			},
 		};
 	}
