@@ -285,6 +285,16 @@ function main() {
 				}
 				this.ctx.stroke();
 			},
+			fl_types: "color int*",
+			fl: function(color, ...ps){
+				this.ctx.fillStyle = color;
+				this.ctx.beginPath();
+				this.ctx.moveTo(this.scale*(ps[0]+this.shiftX), this.scale*(ps[1]+this.shiftY));
+				for(let i = 2; i < ps.length; i+=2){
+					this.ctx.lineTo(this.scale*(ps[i]+this.shiftX), this.scale*(ps[i+1]+this.shiftY));
+				}
+				this.ctx.fill();
+			},
 			txt_types: "int int color float text",
 			txt: function(x, y, color, fontSize, text){
 				this.ctx.fillStyle = color;
