@@ -40,14 +40,16 @@ function main() {
 
 	window.addEventListener(
 		"message", (function(t) {
-			//if (t.data.type) console.log(t.data.type, t.data);
 			if (onOffButton && !onOffButton.checked) return;
+			//if (t.data.type) console.log(t.data.type, t.data);
 			if ("viewerOptions" === t.data.type){
 				if (isPlayerWindow()){
 					if (t.data.gameName)
 						gameName = t.data.gameName; 
-					else if (gameFrames)
+					else if (gameFrames) {
+						console.log(t.data.type, t.data);
 						gameName = detectGameName(gameFrames[0][0].view);
+					}
 					gameName = gameName || "unknown";
 					console.log("GameName: " + gameName);
 					console.log("Viewport: " + (knownGames[gameName].viewport));
@@ -62,11 +64,11 @@ function main() {
 			}
 			else if ("frames" === t.data.type && t.data.gameInfo){
 				rawFrames = t.data.gameInfo.frames;
-				if (gameName){
-					let everyFrame = knownGames[gameName]?.playerStepEveryFrame == true;
-					gameFrames = groupFrames(rawFrames, everyFrame);
-				}
-			console.log("Raw frames:", rawFrames)
+				if (gameName == "unknown")
+					gameName = detectGameName(rawFrames[0].view);
+				let everyFrame = knownGames[gameName]?.playerStepEveryFrame == true;
+				gameFrames = groupFrames(rawFrames, everyFrame);
+				console.log("Raw frames:", rawFrames)
 			} else if ("progress" == t.data.type){
 				if (isPlayerWindow()){
 					renderOverlay(t.data.frame);
