@@ -11,23 +11,28 @@ It adds overlays to the Codingame IDE to help you solve their programming challe
 
 
 ## How to use?
-You bot should output to stderr special instructions, which will be interpreted by the extension, and the overlay will be added to the game visualizer.
 
-Each instruction should be on a separate line and have the following format: `@[InstructionName] [args]`
+1. Your bot `print to stderr` special instructions.
+2. Extension parses them and `draw` them over standard game visualizer.
+
+Each instruction should be on a separate line and have the following format: 
+```
+@[instructionName] [instructionArgs]
+```
 
 The following instructions are supported:
 - `@vp [left] [top] [right] [bottom]` - sets the viewport. Specify logical coordinates for left-top and right-bottom corners of visualizer screen. You don't need it for [known games](extension/knownGames.js).
-- `@r [left] [top] [right] [bottom] [color]` - draws rectangle
-- `@fr [left] [top] [right] [bottom] [color]` - draws filled rectangle
-- `@tr [left] [top] [right] [bottom] [color]` - draws rectangle with semitransparent fill
-- `@c [x] [y] [radius] [color]` - draws a circle
-- `@fc [x] [y] [radius] [color]` - draws a filled circle
-- `@tc [x] [y] [radius] [color]` - draws a circle with semitransparent fill
-- `@l [color] [x1] [y1] [x2] [y2] ...` - draws a lines path
-- `@txt [left] [bottom] [color] [fontSize] [text]` - draws a text Font size is for 800px width canvas, for other sizes font will be rescaled
+- `@r [left] [top] [right] [bottom] [color]` - draws a rectangle without fill.
+- `@fr [left] [top] [right] [bottom] [color]` - draws filled rectangle.
+- `@tr [left] [top] [right] [bottom] [color]` - draws a rectangle with semitransparent fill.
+- `@c [x] [y] [radius] [color]` - draws a circle without fill.
+- `@fc [x] [y] [radius] [color]` - draws a filled circle.
+- `@tc [x] [y] [radius] [color]` - draws a circle with semitransparent fill.
+- `@l [color] [x1] [y1] [x2] [y2] ...` - draws a lines path.
+- `@txt [left] [bottom] [color] [fontSize] [text]` - draws a text. Font size is for 800px width canvas, for other canvas sizes font will be rescaled.
 - `@font [font-name]` - sets font for @txt.
-- `@clr` - clears all overlays
-- `@o [opacity]` - sets global opacity (in range 0 .. 1.0) for overlay canvas
+- `@o [opacity]` - sets global opacity (in range 0 .. 1.0) for overlay canvas.
+- `@clr` - clears all overlays (not very useful).
 
 All coordinates are logical coordinates, as in the game rules.
 
@@ -36,8 +41,10 @@ Color can be specified in CSS color format (but no spaces please!). Some example
 
 Wrong color format will not be reported, but will be ignored.
 
+Syntax errors will be reported on the BSOD :)
+
 ## Constrains
-It works on game replay page, and IDE page.
+It works on game replay page, and IDE page. Refresh page if it is not working.
 
 Stderr is available for your own bots only. That's why no overlays for other players' bots.
 
@@ -46,13 +53,12 @@ Some games may not work properly because the wrong viewport. You can set it manu
 ## Turning off
 Small checkbox in top-left corder of visualizer will disable overlays.
 
-
-You bot should output to stderr special instructions, which will be interpreted by the extension,
-and the overlay will be added to the game visualizer.
+Also you can disable extension.
 
 ## How to install extension
 
 ### From Chrome Web Store
+
 coming soon...
 
 ### From sources
@@ -63,9 +69,7 @@ coming soon...
 4. Click `Load Unpacked` and select `extension` directory from this repository.
 Done!
 
-Open Codingame IDE, add some instructions to stderr and test.
-
-Refresh the page if something is not working.
+Open Codingame IDE, add some instructions to stderr and test. Refresh the page if something is not working.
 
 ## Contribute
 
