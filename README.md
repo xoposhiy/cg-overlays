@@ -48,6 +48,8 @@ Contribute this rules to [extension/knownGames.js](extension/knownGames.js).
 * Handle resize event
 * Add instruction to draw trajectory of entities.  
 * On the last micro-frame of the frame show the next frame overlay to decrease confusion during debugging.
+* Move help here to README
+* Scale text font size according to canvas.width
 
 ## Icons
 
