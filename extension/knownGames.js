@@ -1,4 +1,4 @@
-// Fill free to send PR with other games settings.
+// Feel free to send PR with other games settings.
 // Format: @vp left top right bottom
 // (left, top) - logical coordinates of the left-top point on visualizer screen
 // (right, bottom) - logical coordinates of the right-bottom point on visualizer screen

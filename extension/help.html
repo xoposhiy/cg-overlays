@@ -29,7 +29,7 @@
   <p>
     The following instructions are supported:
     <ul>
-      <li><code>@vp [left] [top] [right] [bottom]</code> - sets the viewport. Specify logical coordinates for left-top and right-bottom corners of visualizer screen. You don't need it for [known games](https://github.com/xoposhiy/cg-overlays/blob/main/extension/knownGames.js).</li>
+      <li><code>@vp [left] [top] [right] [bottom]</code> - sets the viewport. Specify logical coordinates for left-top and right-bottom corners of visualizer screen. You don't need it for <a href="https://github.com/xoposhiy/cg-overlays/blob/main/extension/knownGames.js">known games</a>.</li>
       <li><code>@r [left] [top] [right] [bottom] [color]</code> - draws rectangle</li>
       <li><code>@fr [left] [top] [right] [bottom] [color]</code> - draws filled rectangle</li>
       <li><code>@tr [left] [top] [right] [bottom] [color]</code> - draws rectangle with semitransparent fill</li>
@@ -37,7 +37,7 @@
       <li><code>@fc [x] [y] [radius] [color]</code> - draws a filled circle</li>
       <li><code>@tc [x] [y] [radius] [color]</code> - draws a circle with semitransparent fill</li>
       <li><code>@l [color] [x1] [y1] [x2] [y2] ...</code> - draws a lines path</li>
-      <li><code>@txt [x] [y] [color] [text]</code> - draws a text</li>
+      <li><code>@txt [left] [bottom] [color] [text]</code> - draws a text</li>
       <li><code>@clr</code> - clears all overlays</li>
     </ul>
     All coordinates are logical coordinates, as in the game rules.
@@ -62,7 +62,11 @@
   <p>
     Some games may not work properly because the wrong viewport.
     You can set it manually with <code>@vp</code> instruction.
-    But would be better to make a pull-request with proper changes in <code>[knownGames.js](https://github.com/xoposhiy/cg-overlays/blob/main/extension/knownGames.js)</code>.
+    But would be better to make a pull-request with proper changes in <code><a href="https://github.com/xoposhiy/cg-overlays/blob/main/extension/knownGames.js">knownGames.js</a></code>.
+  </p>
+  <h2>Turning off</h2>
+  <p>
+    Small checkbox in top-left corder of visualizer will disable overlays.
   </p>
   <h2>Github repo</h2>
   <p><a href="https://github.com/xoposhiy/cg-overlays">https://github.com/xoposhiy/cg-overlays</a></p>

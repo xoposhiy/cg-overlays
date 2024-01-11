@@ -99,12 +99,6 @@ function main() {
 		ctx = createContext(canvas, originalCanvas);
 	}
 
-	function tryParse(s){
-		const n = +s;
-		if (isNaN(n)) return s;
-		return n;	
-	}
-
 	function renderOverlay(newFrameIndex) {
 		if (newFrameIndex == frameIndex) return;
 		frameIndex = newFrameIndex;
@@ -116,18 +110,95 @@ function main() {
 			.flat()
 			.filter(line => line && line.startsWith("@"));
 		instructions.unshift(viewports[gameName] || defaultViewport);
+		let errors = [];
 		for(let instruction of instructions){
-			console.log(instruction);
+			//console.log(instruction);
 			const firstSpaceIndex = instruction.indexOf(' ');
 			const fn = instruction.slice(1, firstSpaceIndex);
 			const args = instruction.substring(firstSpaceIndex+1);
 			const f = ctx[fn];
 			if (f == undefined) {
-				console.error("Unknown instruction: " + instruction)
+				errors.push("Unknown instruction: " + instruction);
 				continue;
 			}
-			f.apply(ctx, [args]);
+			let argTypes = ctx[fn + '_types'];
+			if (!argTypes) throw new Error("No arg types for " + fn);
+			try {
+				f.apply(ctx, parse(args, argTypes));
+			}
+			catch(e) {
+				errors.push(`Error executing '${instruction}'`);
+				errors.push(`    expected format: @${fn} ${argTypes}`);
+				errors.push(`    ${e}`);
+				continue;
+			}
 		}
+		if (errors.length > 0){
+			ctx.canvas.style.opacity = 0.7;
+			ctx.ctx.fillStyle = "rgba(0,0,255,0.5)";
+			ctx.ctx.fillRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
+			ctx.ctx.fillStyle = "white";
+			ctx.ctx.font = "14px monospace";
+			let y = 64;
+			ctx.ctx.fillText("CG Overlay bad instructions in stderr:", y, 48);
+			y+=16;
+			for(let error of errors){
+				ctx.ctx.fillText(error, 64, y);
+				y+=16;
+			}
+		}
+	}
+
+	function parse(args, typesString){
+		
+		let types = typesString.split(' ');
+		let i = 0;
+		let iType = 0;
+		
+		function readUntilSpace(){
+			let res = '';
+			while(i < args.length && args[i] != ' '){
+				res += args[i];
+				i++;
+			}
+			if (i < args.length)
+				i++;
+			return res;			
+		}
+
+		function parseOne(type){
+			if (type == 'text'){
+				let res = args.substring(i);
+				i = args.length;
+				return res;
+			}
+			let token = readUntilSpace();
+			if (type == 'int'){
+				if (!/^-?\d+$/.test(token)){
+					throw new Error(`Expected int, but got ${token}`);
+				}
+				return +token;
+			}
+			if (type == 'float'){
+				if (!/^-?\d+(\.\d+)?$/.test(token)){
+					throw new Error(`Expected float, but got ${token}`);
+				}
+				return +token;
+			}
+			return token;
+		}
+
+		let result = [];
+		while (i < args.length){
+			let type = types[iType];
+			if (type.endsWith('*'))
+				type = type.slice(0, -1);
+			else
+				iType++;
+			let value = parseOne(type);
+			result.push(value);
+		}
+		return result;	
 	}
 
 	function createContext(canvas){
@@ -140,33 +211,36 @@ function main() {
 			clr: function(){
 				ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 			},
-			o: function(args){
-				canvas.opacity = +args[0];
+
+			o_types: "float",
+			o: function(opacity){
+				this.canvas.style.opacity = opacity;
 			},
-			vp: function(args){
-				let [left, top, right, bottom] = [...args.split(' ').map(tryParse)];
+
+			vp_types: "int int int int",
+			vp: function(left, top, right, bottom){
 				this.shiftX = -left;
 				this.shiftY = -top;
-				canvas.style.top = originalCanvas.style.top;
-				canvas.style.left = originalCanvas.style.left;
-				canvas.style.width = originalCanvas.style.width;
-				canvas.style.height = originalCanvas.style.height;
+				this.canvas.style.top = originalCanvas.style.top;
+				this.canvas.style.left = originalCanvas.style.left;
+				this.canvas.style.width = originalCanvas.style.width;
+				this.canvas.style.height = originalCanvas.style.height;
 				const sx = canvas.clientWidth/(right-left+1);
 				const sy = canvas.clientHeight/(bottom-top+1);
 				this.scale = Math.min(sx, sy);
 			},
-			r: function(args){
-				let [left, top, right, bottom, color] = [...args.split(' ').map(tryParse)];
+			r_types: "int int int int color",
+			r: function(left, top, right, bottom, color){
 				this.ctx.strokeStyle = color;
 				this.ctx.strokeRect(this.scale*(left+this.shiftX), this.scale*(top+this.shiftY), this.scale*(right-left), this.scale*(bottom-top));
 			},
-			fr: function(args){
-				let [left, top, right, bottom, color] = [...args.split(' ').map(tryParse)];
+			fr_types: "int int int int color",
+			fr: function(left, top, right, bottom, color){
 				this.ctx.fillStyle = color;
 				this.ctx.fillRect(this.scale*(left+this.shiftX), this.scale*(top+this.shiftY), this.scale*(right-left), this.scale*(bottom-top));
 			},
-			tr: function(args){
-				let [left, top, right, bottom, color] = [...args.split(' ').map(tryParse)];
+			tr_types: "int int int int color",
+			tr: function(left, top, right, bottom, color){
 				this.ctx.fillStyle = color;
 				this.ctx.globalAlpha = 0.7;
 				this.ctx.fillRect(this.scale*(left+this.shiftX), this.scale*(top+this.shiftY), this.scale*(right-left), this.scale*(bottom-top));
@@ -174,22 +248,22 @@ function main() {
 				this.ctx.strokeStyle = color;
 				this.ctx.strokeRect(this.scale*(left+this.shiftX), this.scale*(top+this.shiftY), this.scale*(right-left), this.scale*(bottom-top));
 			},
-			c: function(args){
-				let [x, y, radius, color] = [...args.split(' ').map(tryParse)];
+			c_types: "int int int color",
+			c: function(x, y, radius, color){
 				this.ctx.strokeStyle = color;
 				this.ctx.beginPath();
 				this.ctx.arc(this.scale*(x+this.shiftX), this.scale*(y+this.shiftY), this.scale*radius, 0, 2 * Math.PI);
 				this.ctx.stroke();
 			},
-			fc: function(args){
-				let [x, y, radius, color] = [...args.split(' ').map(tryParse)];
+			fc_types: "int int int color",
+			fc: function(x, y, radius, color){
 				this.ctx.fillStyle = color;
 				this.ctx.beginPath();
 				this.ctx.arc(this.scale*(x+this.shiftX), this.scale*(y+this.shiftY), this.scale*radius, 0, 2 * Math.PI);
 				this.ctx.fill();
 			},
-			tc: function(args){
-				let [x, y, radius, color] = [...args.split(' ').map(tryParse)];
+			tc_types: "int int int color",
+			tc: function(x, y, radius, color){
 				this.ctx.fillStyle = color;
 				this.ctx.globalAlpha = 0.7;
 				this.ctx.beginPath();
@@ -199,20 +273,18 @@ function main() {
 				this.ctx.strokeStyle = color;
 				this.ctx.stroke();
 			},
-			l: function(args){
-				let ps = args.split(' ').map(tryParse);
-				this.ctx.strokeStyle = ps[0];
+			l_types: "color int*",
+			l: function(color, ...ps){
+				this.ctx.strokeStyle = color;
 				this.ctx.beginPath();
-				this.ctx.moveTo(this.scale*(ps[1]+this.shiftX), this.scale*(ps[2]+this.shiftY));
-				for(let i = 3; i < ps.length; i+=2){
+				this.ctx.moveTo(this.scale*(ps[0]+this.shiftX), this.scale*(ps[1]+this.shiftY));
+				for(let i = 2; i < ps.length; i+=2){
 					this.ctx.lineTo(this.scale*(ps[i]+this.shiftX), this.scale*(ps[i+1]+this.shiftY));
 				}
 				this.ctx.stroke();
 			},
-			txt: function(args){
-				let ps = args.split(' ').map(tryParse);
-				let [x, y, color] = [...ps];
-				let text = ps.slice(3).join(' ');
+			txt_types: "int int color text",
+			txt: function(x, y, color, text){
 				this.ctx.fillStyle = color;
 				this.ctx.font = "10px Arial";
 				this.ctx.fillText(text, this.scale*(x+this.shiftX), this.scale*(y+this.shiftY));
