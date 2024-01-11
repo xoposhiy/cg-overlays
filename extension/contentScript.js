@@ -1,6 +1,7 @@
 function main() {
 	console.log(`CG Overlays STARTED at ${window.location}`);
 
+	let rawFrames;
 	let gameFrames;
 	let ctx;
 	let frameIndex;
@@ -11,11 +12,12 @@ function main() {
 		return document.getElementById("cg-player") != undefined;
 	}
 
-	function groupFrames(frames){
+	function groupFrames(frames, everyFrame = true){
 		let result = [];
+		if (!frames) return result;
 		for(let i = 0; i < frames.length; i++){
 			let frame = frames[i];
-			if (frame.keyframe){
+			if (frame.keyframe || everyFrame){
 				result.push([frame]);
 			}
 			else{
@@ -25,14 +27,33 @@ function main() {
 		return result;
 	}
 
+	function detectGameName(view){
+		for(let d of detectStrings){
+			if (d.substrings.every(s => view.indexOf(s) >= 0)) {
+				return d.gameName;
+			}
+		}
+		console.log("not detected... View:");
+		console.log(view);
+		return null;
+	}
+
 	window.addEventListener(
 		"message", (function(t) {
+			//if (t.data.type) console.log(t.data.type, t.data);
 			if (onOffButton && !onOffButton.checked) return;
 			if ("viewerOptions" === t.data.type){
 				if (isPlayerWindow()){
-					gameName = t.data.gameName; 
+					if (t.data.gameName)
+						gameName = t.data.gameName; 
+					else if (gameFrames)
+						gameName = detectGameName(gameFrames[0][0].view);
+					gameName = gameName || "unknown";
 					console.log("GameName: " + gameName);
-					console.log("Viewport: " + (viewports[gameName] || defaultViewport));
+					console.log("Viewport: " + (knownGames[gameName].viewport));
+					let everyFrame = knownGames[gameName]?.playerStepEveryFrame == true;
+					gameFrames = groupFrames(rawFrames, everyFrame);
+					console.log("Game Frames: ", gameFrames);
 					initialize();
 				}
 				else{
@@ -40,8 +61,12 @@ function main() {
 				}
 			}
 			else if ("frames" === t.data.type && t.data.gameInfo){
-				gameFrames = groupFrames(t.data.gameInfo.frames);
-				console.log("Game Frames: ", gameFrames);
+				rawFrames = t.data.gameInfo.frames;
+				if (gameName){
+					let everyFrame = knownGames[gameName]?.playerStepEveryFrame == true;
+					gameFrames = groupFrames(rawFrames, everyFrame);
+				}
+			console.log("Raw frames:", rawFrames)
 			} else if ("progress" == t.data.type){
 				if (isPlayerWindow()){
 					renderOverlay(t.data.frame);
@@ -107,7 +132,7 @@ function main() {
 			.map(frame => frame.stderr?.split('\n'))
 			.flat()
 			.filter(line => line && line.startsWith("@"));
-		instructions.unshift(viewports[gameName] || defaultViewport);
+		instructions.unshift(knownGames[gameName].viewport);
 		let errors = [];
 		for(let instruction of instructions){
 			let firstSpaceIndex = instruction.indexOf(' ');

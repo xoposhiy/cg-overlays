@@ -33,20 +33,20 @@ class Drawer {
         this.ctx.lineWidth = 1 / this.scale;
     }
 
-    r_types = 'int int int int color';
-    r(left, top, right, bottom, color) {
+    r_types = 'color int int int int';
+    r(color, left, top, right, bottom) {
         this.ctx.strokeStyle = color;
         this.ctx.strokeRect(left, top, right-left, bottom-top);
     }
 
-    fr_types = 'int int int int color';
-    fr(left, top, right, bottom, color) {
+    fr_types = 'color int int int int';
+    fr(color, left, top, right, bottom) {
         this.ctx.fillStyle = color;
         this.ctx.fillRect(left, top, right-left, bottom-top);
     }
 
-    tr_types = "int int int int color";
-    tr(left, top, right, bottom, color){
+    tr_types = "color int int int int";
+    tr(color, left, top, right, bottom){
         this.ctx.fillStyle = color;
         this.ctx.globalAlpha = 0.7;
         this.ctx.fillRect(left, top, right-left, bottom-top);
@@ -55,24 +55,24 @@ class Drawer {
         this.ctx.strokeRect(left, top, right-left, bottom-top);
     }
 
-    c_types = "int int int color";
-    c(x, y, radius, color){
+    c_types = "color int int int";
+    c(color, x, y, radius){
         this.ctx.strokeStyle = color;
         this.ctx.beginPath();
         this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
         this.ctx.stroke();
     }
     
-    fc_types = "int int int color";
-    fc(x, y, radius, color){
+    fc_types = "color int int int";
+    fc(color, x, y, radius){
         this.ctx.fillStyle = color;
         this.ctx.beginPath();
         this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
         this.ctx.fill();
     }
 
-    tc_types = "int int int color";
-    tc(x, y, radius, color){
+    tc_types = " color int int int";
+    tc(color, x, y, radius){
         this.ctx.fillStyle = color;
         this.ctx.globalAlpha = 0.7;
         this.ctx.beginPath();
@@ -120,8 +120,8 @@ class Drawer {
         this.ctx.stroke();
     }
 
-    txt_types = "int int color float text";
-    txt(x, y, color, fontSize, text){
+    txt_types = "color int int float text";
+    txt(color, x, y, fontSize, text){
         this.ctx.fillStyle = color;
         this.ctx.font = fontSize/this.scale + "px " + this.fontName;
         this.ctx.fillText(text, x, y);
