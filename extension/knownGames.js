@@ -65,7 +65,19 @@ const knownGames = {
                 fieldTop = 166, 
             ),
         playerStepEveryFrame: true,
+        
         },
+        "GameOfDrones": {
+            viewport: createViewport(
+                width=4000,
+                height=1800,
+                leftMargin=300,
+                rightMargin=300,
+                topMargin=180,
+                bottomMargin=180,
+            ),
+            playerStepEveryFrame: true,
+        }
 };
 
 // Sometimes gameName is null, so we need to detect it from the game frame.
@@ -81,7 +93,15 @@ const detectStrings = [
             'Island',
             'Water'
         ]
+    },
+    {
+        gameName: "GameOfDrones",
+        
+        substrings: [
+            '\nGOD\n',
+        ]
     }
+
 ];
 
 function createViewport(width, height, leftMargin = 0, rightMargin = 0, topMargin = 0, bottomMargin = 0) {

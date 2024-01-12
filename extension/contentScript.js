@@ -30,6 +30,7 @@ function main() {
 	function detectGameName(view){
 		for(let d of detectStrings){
 			if (d.substrings.every(s => view.indexOf(s) >= 0)) {
+				console.log("Detected gameName: " + d.gameName);
 				return d.gameName;
 			}
 		}
@@ -46,9 +47,11 @@ function main() {
 				if (isPlayerWindow()){
 					if (t.data.gameName)
 						gameName = t.data.gameName; 
-					else if (gameFrames) {
+					else {
 						console.log(t.data.type, t.data);
-						gameName = detectGameName(gameFrames[0][0].view);
+						if (gameFrames) {
+							gameName = detectGameName(gameFrames[0][0].view);
+						}
 					}
 					gameName = gameName || "unknown";
 					console.log("GameName: " + gameName);
@@ -124,17 +127,25 @@ function main() {
 		ctx = new Drawer(canvas, originalCanvas);
 	}
 
+	function getInstructions(index){
+		let result = gameFrames[index]
+			.map(frame => frame.stderr?.split('\n'))
+			.flat()
+			.filter(line => line && line.startsWith("@"));
+		if (result.length == 0 && index > 0 && index == frameIndex)
+			return getInstructions(index-1);
+		result.unshift(knownGames[gameName].viewport);
+		return result;
+	}
+
 	function renderOverlay(newFrameIndex) {
 		if (newFrameIndex == frameIndex) return;
 		frameIndex = newFrameIndex;
 		if (ctx == null) return;
+		console.log("cg overlay draw frame " + frameIndex);
 		ctx.canvas.width = ctx.originalCanvas.clientWidth;
 		ctx.canvas.height = ctx.originalCanvas.clientHeight;
-		let instructions = gameFrames[frameIndex]
-			.map(frame => frame.stderr?.split('\n'))
-			.flat()
-			.filter(line => line && line.startsWith("@"));
-		instructions.unshift(knownGames[gameName].viewport);
+		let instructions = getInstructions(frameIndex);
 		let errors = [];
 		for(let instruction of instructions){
 			let firstSpaceIndex = instruction.indexOf(' ');
