@@ -30,6 +30,9 @@ function main() {
 					gameName = "unknown";
 					if (t.data.gameName)
 						gameName = t.data.gameName;
+					else{
+						console.log(t.data);
+					}
 					console.log("GameName: " + gameName);
 					initialize(gameName);
 				}
@@ -42,6 +45,7 @@ function main() {
 				console.log("Raw frames:", rawFrames)
 			} else if ("progress" == t.data.type){
 				if (isPlayerWindow()){
+					// console.log(t.data);
 					renderOverlay(t.data.frame);
 				}
 				else{

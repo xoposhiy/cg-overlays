@@ -146,8 +146,7 @@ Also, you can contribute more instructions to draw graphical primitives in file 
 
 ## TODO
 
-* On the last micro-frame of the frame show the next frame overlay to decrease confusion during debugging.
-* Add instruction to draw trajectory of entities.  
+* (?) On the last micro-frame of the frame show the next frame overlay to decrease confusion during debugging.
 * Add some other graphical primitives (arrows, triangles, flags, ...)
 * Add popup support
 * Handle resize window event

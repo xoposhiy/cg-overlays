@@ -80,7 +80,19 @@ const knownGames = {
             (fieldTop = 1240),
             (fieldRight = 15820)
         ),
+    },
+
+    SpaceShooter: {
+        viewport: createViewportFromScreenshot(
+            (fieldLogicalWidth = 1700),
+            (screenshotWidth = 1920),
+            (fieldLeft = 0),
+            (fieldTop = 0),
+            (fieldRight = 1700)
+        ),
     }
+
+
 };
 
 function createViewport(
