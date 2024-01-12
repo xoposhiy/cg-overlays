@@ -5,6 +5,7 @@ function main() {
 	let ctx;
 	let frameIndex;
 	let onOffButton;
+	let gameName;
 
 	window.addEventListener("keydown", function(e) {
 		if (ctx?.canvas == null) return;
@@ -26,7 +27,7 @@ function main() {
 			//if (t.data.type) console.log(t.data.type, t.data);
 			if ("viewerOptions" === t.data.type){
 				if (isPlayerWindow()){
-					let gameName = "unknown";
+					gameName = "unknown";
 					if (t.data.gameName)
 						gameName = t.data.gameName;
 					console.log("GameName: " + gameName);
@@ -94,7 +95,7 @@ function main() {
 			onOffButton.checked = true;
 			onOffButton.onchange = function(){
 				if (onOffButton.checked){
-					initialize();
+					initialize(gameName);
 				}
 				else{
 					deInitialize();
