@@ -1,10 +1,7 @@
 // Feel free to send PR with other games settings.
-// Format: @vp left top right bottom
-// (width, height) - logical (in-game) size of the game field. Take it from the game statements.
-// (xxxMargin) - margin size in logical (in-game) units.
-// You should get them from Referee view code, or find out experimentally.
-// BTW visualizer screen is always 16:9 (same as 1920 x 1080)
 const knownGames = {
+    
+    // Seabed security
     FC2023: {
         viewport: createViewport(
             (width = 10000),
@@ -51,19 +48,18 @@ const knownGames = {
         ),
     },
 
-    //@vp -535 -170 1433 937
     TheGreatEscape: {
         viewport: createViewportFromScreenshot(
             (fieldLogicalWidth = 900),
             (screenshotWidth = 1920),
             (fieldLeft = 522),
+            (fieldTop = 166),
             (fieldRight = 1400),
-            (fieldTop = 166)
+            
         ),
         playerStepEveryFrame: true,
     },
 
-    //@vp -300 -180 4300 1980
     GameOfDrones: {
         viewport: createViewport(
             (width = 4000),
@@ -82,8 +78,8 @@ const knownGames = {
             (fieldLogicalWidth = 3000),
             (screenshotWidth = 16000),
             (fieldLeft = 610),
+            (fieldTop = 15820),
             (fieldRight = 1240),
-            (fieldTop = 15820)
         ),
     }
 };
@@ -111,12 +107,13 @@ function createViewport(
 // 3. Find the game field corners coordinates in the screenshot.
 // 4. Decide the desired logical field width.
 // 5. Put all these data into this function.
+// Or use hold-CTRL key feature in visualizer (and use 16000 for screenshotWidth)
 function createViewportFromScreenshot(
     fieldLogicalWidth,
     screenshotWidth,
     fieldLeft,
-    fieldRight,
-    fieldTop
+    fieldTop,
+    fieldRight
 ) {
     let fieldXFraction = (fieldRight - fieldLeft) / screenshotWidth;
     let screenLogicalWidth = fieldLogicalWidth / fieldXFraction;

@@ -30,7 +30,7 @@ class Drawer {
 
     vp_types = 'int int int int';
     vp(fieldWidth, left, top, right) {
-        let viewport = createViewportFromScreenshot(fieldWidth, 16000, left, right, top);
+        let viewport = createViewportFromScreenshot(fieldWidth, 16000, left, top, right);
         this.setViewport(viewport);
     }
 
