@@ -44,7 +44,7 @@ function main() {
 					renderOverlay(t.data.frame);
 				}
 				else{
-					window.frames[0].postMessage(t.data, "*");
+					window.frames[0]?.postMessage(t.data, "*");
 				}
 			}
 		}));
