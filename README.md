@@ -53,12 +53,28 @@ For some [known games](extension/knownGames.js) you do not need these instructio
 
 - `!game [gameName]` sets game name. Some known games can't be detected by extension. You should help it to recognize game with this instruction (OceanOfCode, GameOfDrones, ...).
 - `!stepEveryFrame` may be needed for some games. In some turn based games visualizer steps on every frame, not only on keyframes. So you need this instruction to sync steps in visualizer.
-- `!vp [left] [top] [right] [bottom]` sets the viewport. Specify logical coordinates for left-top and right-bottom corners of visualizer screen.
+- `!vp [logicalFieldWidth] [screenFieldTop] [screenFieldRight] [screenFieldBottom]` sets the viewport. See below.
 - `!o [opacity]` sets global opacity (in range 0 .. 1.0) for overlay canvas.
+
+### How to use vp instruction?
+
+`!vp [logicalFieldWidth] [screenFieldTop] [screenFieldRight] [screenFieldBottom]`
+
+`logicalFieldWidth` - logical width of the field in game units, as specified in the statements.
+
+All other three parameters — screen coordinates of the field rectangle if total screen width is resized to 16000.
+To find this coordinates you can click on the visualizer, hold CTRL-key and move mouse pointer to the field corners.
+You will see coordinates in the top-left corner of the visualizer.
+
+For example, for OceanOfCode you can use `!vp 900 4270 770 11730` instruction:
+
+- 15x15 cells field will be 900x900 logical units (60 units per cell).
+- In the top-left corner of the field `4270 770` will be shown.
+- In the top-right corner of the field `4270 11730` will be shown.
 
 ### Coordinates 
 
-All coordinates are logical coordinates, as in the game rules.
+All other coordinates are logical coordinates, as in the game rules.
 
 ### Colors
 
@@ -88,6 +104,7 @@ Syntax errors will be reported on the BSOD :)
 @font monospace
 @txt pink 10000 2000 40 Hello world
 ```
+
 Result:
 
 ![result](screenshot3.png)

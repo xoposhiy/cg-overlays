@@ -6,6 +6,16 @@ function main() {
 	let frameIndex;
 	let onOffButton;
 
+	window.addEventListener("keydown", function(e) {
+		if (ctx?.canvas == null) return;
+		if (e.ctrlKey) {
+			ctx.canvas.style.pointerEvents = 'auto';
+		}
+		else{
+			ctx.canvas.style.pointerEvents = 'none';
+		}
+	}, true);
+
 	function isPlayerWindow(){
 		return document.getElementById("cg-player") != undefined;
 	}
@@ -61,6 +71,22 @@ function main() {
 		canvas.style.zIndex = 1000;
 		canvas.style.pointerEvents = 'none';
 		originalCanvas.insertAdjacentElement('afterEnd', canvas);
+
+		canvas.addEventListener('mousemove', ev => {
+			if (!ev.ctrlKey) return;
+			let c = canvas.getContext('2d');
+			let t = c.getTransform();
+			c.resetTransform();			
+			let x = Math.round(ev.clientX * 16000 / canvas.clientWidth);
+			let y = Math.round(ev.clientY * 9000 / canvas.clientHeight);
+			let message = x  + " " + y;
+			let w = c.measureText(message).width;
+			c.fillStyle = "black";
+			c.fillRect(0, 0, w+20, 36);
+			c.fillStyle = "white";
+			c.fillText(message, 10, 32);
+			c.setTransform(t);
+		}, true);
 		if (!onOffButton){
 			onOffButton = document.createElement('input');
 			onOffButton.id = "cgOverlayOnOffButton";
@@ -98,7 +124,7 @@ function main() {
 
 	function getInstructions(index, gameInfo){
 		// get all stderr from all previous frames
-		var everyFrame = gameInfo.playerStepEveryFrame;
+		var everyFrame = gameInfo?.playerStepEveryFrame || false;
 		var rawFrameIndex = everyFrame ? index : getKeyFrameIndex(index);
 		while (rawFrameIndex > 0) {
 			if (rawFrames[rawFrameIndex].stderr) break;
@@ -122,8 +148,10 @@ function main() {
 		ctx.canvas.height = ctx.originalCanvas.clientHeight;
 		let instructions = getInstructions(frameIndex, ctx.gameInfo);
 		let errors = [];
-		let viewport = ctx.gameInfo.viewport;
-		ctx.vp(viewport.left, viewport.top, viewport.right, viewport.bottom);
+		if (ctx.gameInfo){
+			let viewport = ctx.gameInfo.viewport;
+			ctx.setViewport(viewport);
+		}
 		for(let instruction of instructions){
 			let firstSpaceIndex = instruction.indexOf(' ');
 			if (firstSpaceIndex < 0) firstSpaceIndex = instruction.length;
@@ -146,6 +174,10 @@ function main() {
 				errors.push(`    ${e}`);
 				continue;
 			}
+		}
+		if (ctx.gameInfo == null){
+			errors.push("Unknown game. Use !vp instruction to set viewport manually.");
+			errors.push("Hold CTRL key to find out coordinates of the game field corners");
 		}
 		if (errors.length > 0){
 			ctx.ctx.resetTransform();

@@ -5,11 +5,6 @@
 // You should get them from Referee view code, or find out experimentally.
 // BTW visualizer screen is always 16:9 (same as 1920 x 1080)
 const knownGames = {
-    unknown: {
-        viewport: createViewport((width = 16000), (height = 9000)),
-        playerStepEveryFrame: false,
-    },
-
     FC2023: {
         viewport: createViewport(
             (width = 10000),
@@ -80,6 +75,17 @@ const knownGames = {
         ),
         playerStepEveryFrame: true,
     },
+
+    // Crystal Rush
+    UTG2019: {
+        viewport: createViewportFromScreenshot(
+            (fieldLogicalWidth = 3000),
+            (screenshotWidth = 16000),
+            (fieldLeft = 610),
+            (fieldRight = 1240),
+            (fieldTop = 15820)
+        ),
+    }
 };
 
 function createViewport(
