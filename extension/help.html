@@ -36,9 +36,15 @@ It adds overlays to the Codingame IDE to help you solve their programming challe
 Each instruction should be on a separate line and have the following format: 
 ```
 @[instructionName] [instructionArgs]
+
+or
+
+![instructionName] [instructionArgs]
 ```
 
-The following instructions are supported:
+Instruction marked with ! will be executed every frame starting from the frame it was issued.
+
+The following instructions are supported (all @-instructions can be used as !-instructions):
 
 #### Rectangles
 
@@ -62,16 +68,17 @@ The following instructions are supported:
 - `@txt [color] [left] [bottom] [fontSize] [text]` draws a text. Font size is for 800px width canvas, for other canvas sizes font will be rescaled.
 - `@font [font-name]` sets font for @txt.
 
-#### Other
-- `@o [opacity]` sets global opacity (in range 0 .. 1.0) for overlay canvas.
-- `@vp [left] [top] [right] [bottom]` sets the viewport. Specify logical coordinates for left-top and right-bottom corners of visualizer screen. You don't need it for [known games](extension/knownGames.js).
+#### GameParameters
+For some [known games](extension/knownGames.js) you do not need these instructions. But if something is not working - use them!
+
+- `!game [gameName]` sets game name. Some known games can't be detected by extension. You should help it to recognize game with this instruction (OceanOfCode, GameOfDrones, ...).
+- `!stepEveryFrame` may be needed for some games. In some turn based games visualizer steps on every frame, not only on keyframes. So you need this instruction to sync steps in visualizer.
+- `!vp [left] [top] [right] [bottom]` sets the viewport. Specify logical coordinates for left-top and right-bottom corners of visualizer screen.
+- `!o [opacity]` sets global opacity (in range 0 .. 1.0) for overlay canvas.
 
 ### Coordinates 
 
 All coordinates are logical coordinates, as in the game rules.
-
-If game is unknown for extension, the default viewport is used: `0 0 16000 9000`.
-
 
 ### Colors
 
@@ -87,6 +94,7 @@ Syntax errors will be reported on the BSOD :)
 ### Sample stderr output
 
 ```
+!game CodeBusters
 @o 0.7
 @fr red 0 0 1000 1000
 @r #00FFFF 1000 0 2000 1000

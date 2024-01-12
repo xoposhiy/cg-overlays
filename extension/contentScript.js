@@ -2,41 +2,12 @@ function main() {
 	console.log(`CG Overlays STARTED at ${window.location}`);
 
 	let rawFrames;
-	let gameFrames;
 	let ctx;
 	let frameIndex;
-	let gameName;
 	let onOffButton;
 
 	function isPlayerWindow(){
 		return document.getElementById("cg-player") != undefined;
-	}
-
-	function groupFrames(frames, everyFrame = true){
-		let result = [];
-		if (!frames) return result;
-		for(let i = 0; i < frames.length; i++){
-			let frame = frames[i];
-			if (frame.keyframe || everyFrame){
-				result.push([frame]);
-			}
-			else{
-				result[result.length-1].push(frame);
-			}
-		}
-		return result;
-	}
-
-	function detectGameName(view){
-		for(let d of detectStrings){
-			if (d.substrings.every(s => view.indexOf(s) >= 0)) {
-				console.log("Detected gameName: " + d.gameName);
-				return d.gameName;
-			}
-		}
-		console.log("not detected... View:");
-		console.log(view);
-		return null;
 	}
 
 	window.addEventListener(
@@ -45,21 +16,11 @@ function main() {
 			//if (t.data.type) console.log(t.data.type, t.data);
 			if ("viewerOptions" === t.data.type){
 				if (isPlayerWindow()){
+					let gameName = "unknown";
 					if (t.data.gameName)
-						gameName = t.data.gameName; 
-					else {
-						console.log(t.data.type, t.data);
-						if (gameFrames) {
-							gameName = detectGameName(gameFrames[0][0].view);
-						}
-					}
-					gameName = gameName || "unknown";
+						gameName = t.data.gameName;
 					console.log("GameName: " + gameName);
-					console.log("Viewport: " + (knownGames[gameName].viewport));
-					let everyFrame = knownGames[gameName]?.playerStepEveryFrame == true;
-					gameFrames = groupFrames(rawFrames, everyFrame);
-					console.log("Game Frames: ", gameFrames);
-					initialize();
+					initialize(gameName);
 				}
 				else{
 					window.frames[0].postMessage(t.data, "*");
@@ -67,10 +28,6 @@ function main() {
 			}
 			else if ("frames" === t.data.type && t.data.gameInfo){
 				rawFrames = t.data.gameInfo.frames;
-				if (gameName == "unknown")
-					gameName = detectGameName(rawFrames[0].view);
-				let everyFrame = knownGames[gameName]?.playerStepEveryFrame == true;
-				gameFrames = groupFrames(rawFrames, everyFrame);
 				console.log("Raw frames:", rawFrames)
 			} else if ("progress" == t.data.type){
 				if (isPlayerWindow()){
@@ -90,7 +47,7 @@ function main() {
 		ctx = null;
 	}
 
-	function initialize(){
+	function initialize(gameName){
 		let canvasContainer = document.getElementsByClassName('canvas-container')[0];
 		if (canvasContainer == null) {
 			console.error("no canvas container at " + window.location);
@@ -124,29 +81,49 @@ function main() {
 			onOffButton.style.backgroundColor = 'white';
 		}
 		canvas.insertAdjacentElement('afterEnd', onOffButton);
-		ctx = new Drawer(canvas, originalCanvas);
+		ctx = new Drawer(canvas, originalCanvas, gameName);
 	}
 
-	function getInstructions(index){
-		let result = gameFrames[index]
-			.map(frame => frame.stderr?.split('\n'))
+	function getKeyFrameIndex(keyFrameIndex){
+		let keyFramesCount = 0;
+		for(let i=0; i<rawFrames.length; i++){
+			if (rawFrames[i].keyframe) {
+				if (keyFramesCount == keyFrameIndex)
+					return i;
+				keyFramesCount++;
+			}
+		}
+		throw new Error("No keyframe with index " + keyFrameIndex + " Try instruction !stepEveryFrame in your stderr before game starts.");
+	}
+
+	function getInstructions(index, gameInfo){
+		// get all stderr from all previous frames
+		var everyFrame = gameInfo.playerStepEveryFrame;
+		var rawFrameIndex = everyFrame ? index : getKeyFrameIndex(index);
+		while (rawFrameIndex > 0) {
+			if (rawFrames[rawFrameIndex].stderr) break;
+			rawFrameIndex--;
+		}
+		let result = (rawFrames[rawFrameIndex].stderr?.split('\n') || [])
 			.flat()
 			.filter(line => line && line.startsWith("@"));
-		if (result.length == 0 && index > 0 && index == frameIndex)
-			return getInstructions(index-1);
-		result.unshift(knownGames[gameName].viewport);
-		return result;
+		let prevInstructions = rawFrames.slice(0, rawFrameIndex+1)
+			.map(frame => frame.stderr?.split('\n')).flat()
+			.filter(line => line && line.startsWith("!"));
+		return prevInstructions.concat(result);
 	}
 
 	function renderOverlay(newFrameIndex) {
 		if (newFrameIndex == frameIndex) return;
 		frameIndex = newFrameIndex;
 		if (ctx == null) return;
-		console.log("cg overlay draw frame " + frameIndex);
+		console.log("renderOverlay frame = " + frameIndex);
 		ctx.canvas.width = ctx.originalCanvas.clientWidth;
 		ctx.canvas.height = ctx.originalCanvas.clientHeight;
-		let instructions = getInstructions(frameIndex);
+		let instructions = getInstructions(frameIndex, ctx.gameInfo);
 		let errors = [];
+		let viewport = ctx.gameInfo.viewport;
+		ctx.vp(viewport.left, viewport.top, viewport.right, viewport.bottom);
 		for(let instruction of instructions){
 			let firstSpaceIndex = instruction.indexOf(' ');
 			if (firstSpaceIndex < 0) firstSpaceIndex = instruction.length;

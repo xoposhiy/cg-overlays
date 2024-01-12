@@ -1,5 +1,5 @@
 class Drawer {
-    constructor(canvas, originalCanvas) {
+    constructor(canvas, originalCanvas, gameName) {
         this.canvas = canvas;
         this.originalCanvas = originalCanvas;
         this.ctx = canvas.getContext('2d');
@@ -7,6 +7,20 @@ class Drawer {
         this.shiftX = 0.0;
         this.shiftY = 0.0;
         this.fontName = 'Arial';
+        this.gameInfo = knownGames[gameName] || knownGames['unknown'];
+    }
+
+    game_types = 'text';
+    game(gameName) {
+        this.gameInfo = knownGames[gameName] || knownGames['unknown'];
+		let viewport = knownGames[gameName].viewport;
+		this.vp(viewport.left, viewport.top, viewport.right, viewport.bottom);
+        console.log("GameName: " + gameName + " Viewport: ", viewport);
+    }
+    
+    stepEveryFrame_types = '';
+    stepEveryFrame() {
+        this.gameInfo = {... this.gameInfo, playerStepEveryFrame: true};
     }
 
     vp_types = 'int int int int';
