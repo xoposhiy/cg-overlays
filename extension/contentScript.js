@@ -176,9 +176,11 @@ function main() {
 				continue;
 			}
 		}
-		if (ctx.gameInfo == null){
-			errors.push("Unknown game. Use !vp instruction to set viewport manually.");
-			errors.push("Hold CTRL key to find out coordinates of the game field corners");
+		if (instructions.length > 0 && !ctx.gameInfo){
+			errors.push(`Unknown game '${gameName}'! Use one of two options:`);
+			errors.push(`  1. Use '!game <gameName>' instruction for known game`);
+			errors.push("  2. Use '!vp fieldWidth left top right' for setting viewport manually");
+			errors.push("     Hold CTRL key and click to visualizer to find out coordinates of the game field corners for vp instruction.");
 		}
 		if (errors.length > 0){
 			ctx.ctx.resetTransform();
@@ -188,7 +190,7 @@ function main() {
 			ctx.ctx.fillStyle = "white";
 			ctx.ctx.font = "14px monospace";
 			let y = 64;
-			ctx.ctx.fillText("CG Overlay bad instructions in stderr:", y, 48);
+			ctx.ctx.fillText("CG Overlay errors:", y, 48);
 			y+=16;
 			for(let error of errors){
 				ctx.ctx.fillText(error, 64, y);
