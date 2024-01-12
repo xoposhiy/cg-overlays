@@ -8,6 +8,8 @@ class Drawer {
         this.shiftY = 0.0;
         this.fontName = 'Arial';
         this.gameInfo = knownGames[gameName];
+        console.log("GameName: " + gameName);
+        console.log(this.gameInfo?.viewport);
     }
 
     game_types = 'text';

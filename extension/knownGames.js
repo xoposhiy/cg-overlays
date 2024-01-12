@@ -54,8 +54,7 @@ const knownGames = {
             (screenshotWidth = 1920),
             (fieldLeft = 522),
             (fieldTop = 166),
-            (fieldRight = 1400),
-            
+            (fieldRight = 1400)            
         ),
         playerStepEveryFrame: true,
     },
@@ -78,8 +77,8 @@ const knownGames = {
             (fieldLogicalWidth = 3000),
             (screenshotWidth = 16000),
             (fieldLeft = 610),
-            (fieldTop = 15820),
-            (fieldRight = 1240),
+            (fieldTop = 1240),
+            (fieldRight = 15820)
         ),
     }
 };
