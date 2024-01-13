@@ -25,7 +25,15 @@ function main() {
 		"message", (async function(t) {
 			if (onOffButton && !onOffButton.checked) return;
 			//if (t.data.type) console.log(t.data.type, t.data);
-			if ("viewerOptions" === t.data.type){
+			if ("resize" == t.data.type) {
+				if (isPlayerWindow()){
+					this.setTimeout(async () => await renderOverlay(frameIndex, 1), 1000);
+				}
+				else{
+					window.frames[0]?.postMessage(t.data, "*");
+				}
+			}
+			else if ("viewerOptions" === t.data.type){
 				if (isPlayerWindow()){
 					gameName = "unknown";
 					if (t.data.gameName)

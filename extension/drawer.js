@@ -9,14 +9,13 @@ class Drawer {
         this.fontName = 'Arial';
         this.gameInfo = knownGames[gameName];
         this.grids = {};
-        console.log("GameName: " + gameName);
+        console.log("Detected GameName: " + gameName);
         console.log(this.gameInfo?.viewport);
     }
 
     game_types = 'text';
     game(gameName) {
         this.gameInfo = knownGames[gameName];
-        console.log("GameName: " + gameName);
         if (this.gameInfo){
             let viewport = knownGames[gameName].viewport;
             this.setViewport(viewport);
@@ -165,7 +164,6 @@ class Drawer {
     grid_types = "id int int float float float float";
     grid(id, nRows, nCols, left, top, cellWidth, cellHeight){
         this.grids[id] = {id, nRows, nCols, left, top, cellWidth, cellHeight};
-        console.log(this.grids);
     }
 
     fcell_types = "color id int int";
@@ -189,7 +187,6 @@ class Drawer {
             let index = cells[i];
             let row = Math.floor(index / grid.nCols);
             let col = index % grid.nCols;
-            console.log("fill cell ", row, col);
             this.ctx.fillRect(
                 grid.left + grid.cellWidth * col,
                 grid.top + grid.cellHeight * row,

@@ -160,10 +160,8 @@ Also, you can contribute more instructions to draw graphical primitives in file 
 
 ## TODO
 
-* Add some other graphical primitives (arrows, grid, hexagonal-grid, triangles, flags, circle sectors, ...)
+* Add some other graphical primitives (arrows, hexagonal-grid, triangles, flags, circle sectors, ...)
 * Add popup support
-* Handle resize window event
-
 
 ## Thanks for icon
 
