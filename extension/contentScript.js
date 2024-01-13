@@ -22,7 +22,7 @@ function main() {
 	}
 
 	window.addEventListener(
-		"message", (function(t) {
+		"message", (async function(t) {
 			if (onOffButton && !onOffButton.checked) return;
 			//if (t.data.type) console.log(t.data.type, t.data);
 			if ("viewerOptions" === t.data.type){
@@ -46,7 +46,7 @@ function main() {
 			} else if ("progress" == t.data.type){
 				if (isPlayerWindow()){
 					// console.log(t.data);
-					renderOverlay(t.data.frame);
+					await renderOverlay(t.data.frame, t.data.progress);
 				}
 				else{
 					window.frames[0]?.postMessage(t.data, "*");
@@ -128,7 +128,6 @@ function main() {
 	}
 
 	function getInstructions(index, gameInfo){
-		// get all stderr from all previous frames
 		var everyFrame = gameInfo?.playerStepEveryFrame || false;
 		var rawFrameIndex = everyFrame ? index : getKeyFrameIndex(index);
 		while (rawFrameIndex > 0) {
@@ -144,14 +143,17 @@ function main() {
 		return prevInstructions.concat(result);
 	}
 
-	function renderOverlay(newFrameIndex) {
-		if (newFrameIndex == frameIndex) return;
+	async function renderOverlay(newFrameIndex, progressValue) {
+		if (newFrameIndex == frameIndex && progressValue != 1) return;
 		frameIndex = newFrameIndex;
 		if (ctx == null) return;
-		console.log("renderOverlay frame = " + frameIndex);
+		let options = await chrome.storage.local.get(['syncWithVisual']);
+
 		ctx.canvas.width = ctx.originalCanvas.clientWidth;
 		ctx.canvas.height = ctx.originalCanvas.clientHeight;
-		let instructions = getInstructions(frameIndex, ctx.gameInfo);
+		let delta = options.syncWithVisual && progressValue == 1 ? 1 : 0;
+		console.log("renderOverlay frame = " + frameIndex + " delta = " + delta);
+		let instructions = getInstructions(frameIndex + delta, ctx.gameInfo);
 		let errors = [];
 		if (ctx.gameInfo){
 			let viewport = ctx.gameInfo.viewport;

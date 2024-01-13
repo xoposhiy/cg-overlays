@@ -109,6 +109,14 @@ Result:
 
 ![result](screenshot3.png)
 
+## Synchronize overlay with visualized state
+
+At the end of the game step visualizer shows _the result of the applied move_.
+But overlay by default shows the stderr _on the beginning_ of the step. 
+So the overlay is synchronized with the console output but not with the visual.
+
+You can change this behavior by checkbox if you click on the extension icon.
+
 ## Constraints
 It works on game replay page, and IDE page. Refresh page if it is not working.
 
@@ -146,10 +154,10 @@ Also, you can contribute more instructions to draw graphical primitives in file 
 
 ## TODO
 
-* (?) On the last micro-frame of the frame show the next frame overlay to decrease confusion during debugging.
-* Add some other graphical primitives (arrows, triangles, flags, ...)
+* Add some other graphical primitives (arrows, grid, hexagonal-grid, triangles, flags, circle sectors, ...)
 * Add popup support
 * Handle resize window event
+
 
 ## Thanks for icon
 

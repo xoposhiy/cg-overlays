@@ -1,17 +1,16 @@
-function onShowNextFrameOnLastSubframeChange() {
-  chrome.storage.local.set({showNextFrameOnLastSubframe: showNextFrameOnLastSubframe.checked});
+function onSyncWithVisualChange() {
+  chrome.storage.local.set({syncWithVisual: syncWithVisual.checked});
 }
 
-function onLoad(){
+async function onLoad(){
     const md = document.getElementById('markdown');
     document.getElementById('content').innerHTML =
         marked.parse(md.innerText);
 
-    let showNextFrameOnLastSubframe = document.getElementById('showNextFrameOnLastSubframe');
-    chrome.storage.local.get(['showNextFrameOnLastSubframe'], function(result) {
-        showNextFrameOnLastSubframe.checked = result.showNextFrameOnLastSubframe;
-    });
-    showNextFrameOnLastSubframe.addEventListener('change', onShowNextFrameOnLastSubframeChange);
+    let syncWithVisual = document.getElementById('syncWithVisual');
+    let result = await chrome.storage.local.get(['syncWithVisual']);
+    syncWithVisual.checked = result.syncWithVisual;
+    syncWithVisual.addEventListener('change', onSyncWithVisualChange);
        
 }
 
