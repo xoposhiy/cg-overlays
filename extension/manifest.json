@@ -18,7 +18,7 @@
 			"512": "layers512.png"
 		}
 	},
-	"permissions": ["activeTab", "scripting"],
+	"permissions": ["activeTab", "scripting", "storage"],
 	"content_scripts": [
 		{
 		  "matches": ["https://www.codingame.com/ide/*", "https://www.codingame.com/replay/*", "https://static.codingame.com/*", "https://www.codingame.com/share-replay/*"],

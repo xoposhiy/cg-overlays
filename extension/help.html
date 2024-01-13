@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>CG Overlays</title>
   <script src="marked.min.js"></script>
-  <script src="md.js"></script>
+  <script src="help.js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -23,7 +23,11 @@
   </style>
 </head>
 <body style="width:700px">
-  <div id="content"></div>
+  <div>
+  <input type="checkbox" id="showNextFrameOnLastSubframe" name="showNextFrameOnLastSubframe" />
+  <label for="showNextFrameOnLastSubframe">Show overlay for next frame on the last subframe</label>
+</div>
+<div id="content"></div>
   <pre style="display:none" id="markdown">
 # What is CG Overlays?
 It adds overlays to the Codingame IDE to help you solve their programming challenges.
