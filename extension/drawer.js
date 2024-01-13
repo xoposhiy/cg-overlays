@@ -41,7 +41,7 @@ class Drawer {
         this.canvas.style.left = this.originalCanvas.style.left;
         this.canvas.style.width = this.originalCanvas.style.width;
         this.canvas.style.height = this.originalCanvas.style.height;
-        this.scale = this.canvas.clientWidth / (viewport.right - viewport.left + 1);
+        this.scale = this.canvas.clientWidth / (viewport.right - viewport.left);
         this.ctx.setTransform(
             this.scale, 0,
             0, this.scale,
