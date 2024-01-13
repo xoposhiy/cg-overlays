@@ -135,11 +135,11 @@ function createViewportFromScreenshot(
     let logicalRight = screenLogicalWidth - logicalLeft;
     let logicalBottom = screenLogicalHeight - logicalTop;
     return {
-        left: -Math.round(logicalLeft),
-        top: -Math.round(logicalTop),
-        right: Math.round(logicalRight),
-        bottom: Math.round(logicalBottom),
+        left: -logicalLeft,
+        top: -logicalTop,
+        right: logicalRight,
+        bottom: logicalBottom,
         fieldWidth: fieldLogicalWidth,
-        fieldHeight: Math.round((fieldLogicalWidth * 9) / 16),
+        fieldHeight: (fieldLogicalWidth * 9) / 16,
     };
 }
