@@ -147,11 +147,11 @@ function main() {
 		if (newFrameIndex == frameIndex && progressValue != 1) return;
 		frameIndex = newFrameIndex;
 		if (ctx == null) return;
-		let options = await chrome.storage.local.get(['syncWithVisual']);
+		let options = await chrome.storage?.local?.get(['syncWithVisual']);
 
 		ctx.canvas.width = ctx.originalCanvas.clientWidth;
 		ctx.canvas.height = ctx.originalCanvas.clientHeight;
-		let delta = options.syncWithVisual && progressValue == 1 ? 1 : 0;
+		let delta = options?.syncWithVisual && progressValue == 1 ? 1 : 0;
 		console.log("renderOverlay frame = " + frameIndex + " delta = " + delta);
 		let instructions = getInstructions(frameIndex + delta, ctx.gameInfo);
 		let errors = [];

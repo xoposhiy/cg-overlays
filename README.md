@@ -44,6 +44,12 @@ The following instructions are supported (all @-instructions can be used as !-in
 - `@fl ...` draws a lines path and fill internals.
 - `@tl ...` draws a lines path and fill internals with semitransparent.
 
+#### Grids
+
+- `!grid [gridId] [nRows] [nCols] [left] [top] [cellWidth] [cellHeight]` - define grid, draws nothing.
+- `@fgrid [color] [gridId] [cell1] [cell2] ...` - fill grid cells with numbers cell1, cell2, ... Cell (x, y) has number x + nCols*y.
+- `@fcell [color] [gridId] [col] [row]` - fill grid cell with specified coordinates in the grid.
+
 #### Text
 - `@txt [color] [left] [bottom] [fontSize] [text]` draws a text. Font size is for 800px width canvas, for other canvas sizes font will be rescaled.
 - `@font [font-name]` sets font for @txt.

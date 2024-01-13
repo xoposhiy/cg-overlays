@@ -8,6 +8,7 @@ class Drawer {
         this.shiftY = 0.0;
         this.fontName = 'Arial';
         this.gameInfo = knownGames[gameName];
+        this.grids = {};
         console.log("GameName: " + gameName);
         console.log(this.gameInfo?.viewport);
     }
@@ -159,5 +160,42 @@ class Drawer {
     o_types = "float";
     o(opacity){
         this.canvas.style.opacity = opacity;
+    }
+
+    grid_types = "id int int float float float float";
+    grid(id, nRows, nCols, left, top, cellWidth, cellHeight){
+        this.grids[id] = {id, nRows, nCols, left, top, cellWidth, cellHeight};
+        console.log(this.grids);
+    }
+
+    fcell_types = "color id int int";
+    fcell(color, gridId, col, row){
+        let grid = this.grids[gridId];
+        if (!grid) return;
+        this.ctx.fillStyle = color;
+        this.ctx.fillRect(
+            grid.left + grid.cellWidth * col,
+            grid.top + grid.cellHeight * row,
+            grid.cellWidth,
+            grid.cellHeight
+        );
+    }
+    fgrid_types = "color id int*";
+    fgrid(color, gridId, ...cells){
+        let grid = this.grids[gridId];
+        if (!grid) return;
+        this.ctx.fillStyle = color;
+        for(let i = 0; i < cells.length; i++){
+            let index = cells[i];
+            let row = Math.floor(index / grid.nCols);
+            let col = index % grid.nCols;
+            console.log("fill cell ", row, col);
+            this.ctx.fillRect(
+                grid.left + grid.cellWidth * col,
+                grid.top + grid.cellHeight * row,
+                grid.cellWidth,
+                grid.cellHeight
+            );
+        }
     }
 }
