@@ -139,7 +139,7 @@ Also you can disable extension.
 
 ### From Chrome Web Store
 
-coming soon...
+[Cg Overlays](https://chromewebstore.google.com/detail/cg-overlays/ompgcnjgghjeiadcafppjhimcolcphjj?hl=en)
 
 ### From sources
 
