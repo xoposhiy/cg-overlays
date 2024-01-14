@@ -3,9 +3,7 @@ class Drawer {
         this.canvas = canvas;
         this.originalCanvas = originalCanvas;
         this.ctx = canvas.getContext('2d');
-        this.scale = 1.0;
-        this.shiftX = 0.0;
-        this.shiftY = 0.0;
+        this.contextAdapter = new ContextAdapter(this.ctx, 1.0, 0, 0);
         this.fontName = 'Arial';
         this.gameInfo = knownGames[gameName];
         this.grids = {};
@@ -41,44 +39,37 @@ class Drawer {
         this.canvas.style.left = this.originalCanvas.style.left;
         this.canvas.style.width = this.originalCanvas.style.width;
         this.canvas.style.height = this.originalCanvas.style.height;
-        this.scale = this.canvas.clientWidth / (viewport.right - viewport.left);
-        this.ctx.setTransform(
-            this.scale, 0,
-            0, this.scale,
-            -viewport.left * this.scale,
-            -viewport.top * this.scale
-        );
-        this.ctx.lineWidth = 1 / this.scale;
+        this.contextAdapter = new ContextAdapter(this.ctx, this.canvas.clientWidth / (viewport.right - viewport.left), -this.gameInfo.viewport.left, -this.gameInfo.viewport.top)
         this.gameInfo = {... this.gameInfo, viewport: viewport};
     }
 
     r_types = 'color float float float float';
     r(color, left, top, right, bottom) {
         this.ctx.strokeStyle = color;
-        this.ctx.strokeRect(left, top, right-left, bottom-top);
+        this.contextAdapter.strokeRect(left, top, right-left, bottom-top);
     }
 
     fr_types = 'color float float float float';
     fr(color, left, top, right, bottom) {
         this.ctx.fillStyle = color;
-        this.ctx.fillRect(left, top, right-left, bottom-top);
+        this.contextAdapter.fillRect(left, top, right-left, bottom-top);
     }
 
     tr_types = "color float float float float";
     tr(color, left, top, right, bottom){
         this.ctx.fillStyle = color;
         this.ctx.globalAlpha = 0.7;
-        this.ctx.fillRect(left, top, right-left, bottom-top);
+        this.contextAdapter.fillRect(left, top, right-left, bottom-top);
         this.ctx.globalAlpha = 1.0;
         this.ctx.strokeStyle = color;
-        this.ctx.strokeRect(left, top, right-left, bottom-top);
+        this.contextAdapter.strokeRect(left, top, right-left, bottom-top);
     }
 
     c_types = "color float float float";
     c(color, x, y, radius){
         this.ctx.strokeStyle = color;
         this.ctx.beginPath();
-        this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
+        this.contextAdapter.arc(x, y, radius, 0, 2 * Math.PI);
         this.ctx.stroke();
     }
     
@@ -86,7 +77,7 @@ class Drawer {
     fc(color, x, y, radius){
         this.ctx.fillStyle = color;
         this.ctx.beginPath();
-        this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
+        this.contextAdapter.arc(x, y, radius, 0, 2 * Math.PI);
         this.ctx.fill();
     }
 
@@ -95,7 +86,7 @@ class Drawer {
         this.ctx.fillStyle = color;
         this.ctx.globalAlpha = 0.7;
         this.ctx.beginPath();
-        this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
+        this.contextAdapter.arc(x, y, radius, 0, 2 * Math.PI);
         this.ctx.fill();
         this.ctx.globalAlpha = 1.0;
         this.ctx.strokeStyle = color;
@@ -106,9 +97,9 @@ class Drawer {
     l(color, ...ps){
         this.ctx.strokeStyle = color;
         this.ctx.beginPath();
-        this.ctx.moveTo(ps[0], ps[1]);
+        this.contextAdapter.moveTo(ps[0], ps[1]);
         for(let i = 2; i < ps.length; i+=2){
-            this.ctx.lineTo(ps[i], ps[i+1]);
+            this.contextAdapter.lineTo(ps[i], ps[i+1]);
         }
         this.ctx.stroke();
     }
@@ -117,9 +108,9 @@ class Drawer {
     fl(color, ...ps){
         this.ctx.fillStyle = color;
         this.ctx.beginPath();
-        this.ctx.moveTo(ps[0], ps[1]);
+        this.contextAdapter.moveTo(ps[0], ps[1]);
         for(let i = 2; i < ps.length; i+=2){
-            this.ctx.lineTo(ps[i], ps[i+1]);
+            this.contextAdapter.lineTo(ps[i], ps[i+1]);
         }
         this.ctx.fill();
     }
@@ -129,9 +120,9 @@ class Drawer {
         this.ctx.fillStyle = color;
         this.ctx.globalAlpha = 0.7;
         this.ctx.beginPath();
-        this.ctx.moveTo(ps[0], ps[1]);
+        this.contextAdapter.moveTo(ps[0], ps[1]);
         for(let i = 2; i < ps.length; i+=2){
-            this.ctx.lineTo(ps[i], ps[i+1]);
+            this.contextAdapter.lineTo(ps[i], ps[i+1]);
         }
         this.ctx.fill();
         this.ctx.globalAlpha = 1.0;
@@ -142,8 +133,8 @@ class Drawer {
     txt_types = "color float float float text";
     txt(color, x, y, fontSize, text){
         this.ctx.fillStyle = color;
-        this.ctx.font = fontSize/this.scale + "px " + this.fontName;
-        this.ctx.fillText(text, x, y);
+        this.ctx.font = fontSize + "px " + this.fontName;
+        this.contextAdapter.fillText(text, x, y);
     }
 
     font_types = "text";
@@ -171,7 +162,7 @@ class Drawer {
         let grid = this.grids[gridId];
         if (!grid) return;
         this.ctx.fillStyle = color;
-        this.ctx.fillRect(
+        this.contextAdapter.fillRect(
             grid.left + grid.cellWidth * col,
             grid.top + grid.cellHeight * row,
             grid.cellWidth,
@@ -187,7 +178,7 @@ class Drawer {
             let index = cells[i];
             let row = Math.floor(index / grid.nCols);
             let col = index % grid.nCols;
-            this.ctx.fillRect(
+            this.contextAdapter.fillRect(
                 grid.left + grid.cellWidth * col,
                 grid.top + grid.cellHeight * row,
                 grid.cellWidth,

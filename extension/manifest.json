@@ -22,7 +22,7 @@
 	"content_scripts": [
 		{
 		  "matches": ["https://www.codingame.com/ide/*", "https://www.codingame.com/replay/*", "https://static.codingame.com/*", "https://www.codingame.com/share-replay/*"],
-		  "js": ["knownGames.js", "drawer.js", "contentScript.js"],
+		  "js": ["knownGames.js", "contextAdapter.js", "drawer.js", "contentScript.js"],
 		  "all_frames" : true
 		}
 	],
