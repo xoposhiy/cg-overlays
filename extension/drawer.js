@@ -11,18 +11,23 @@ class Drawer {
         console.log(this.gameInfo?.viewport);
     }
 
-    game_types = 'text';
-    game(gameName) {
-        this.gameInfo = knownGames[gameName];
-        if (this.gameInfo){
-            let viewport = knownGames[gameName].viewport;
+    game_types = 'name';
+    game(gameName, ...args) {
+        let knownGame = knownGames[gameName];
+        this.gameInfo = knownGame;
+        if (this.gameInfo) {
+            let viewport;
+            if (knownGame.viewport_fn && !knownGame.viewport) {
+                viewport = knownGame.viewport_fn(this, ...args);
+            } else {
+                viewport = knownGame.viewport;
+            }
             this.setViewport(viewport);
-        }
-        else{
+        } else {
             throw new Error(`Unknown game ${gameName}. Use !vp instruction to set viewport manually.`);
         }
     }
-    
+
     stepEveryFrame_types = '';
     stepEveryFrame() {
         this.gameInfo = {... this.gameInfo, playerStepEveryFrame: true};
@@ -39,7 +44,7 @@ class Drawer {
         this.canvas.style.left = this.originalCanvas.style.left;
         this.canvas.style.width = this.originalCanvas.style.width;
         this.canvas.style.height = this.originalCanvas.style.height;
-        this.contextAdapter = new ContextAdapter(this.ctx, this.canvas.clientWidth / (viewport.right - viewport.left), -this.gameInfo.viewport.left, -this.gameInfo.viewport.top)
+        this.contextAdapter = new ContextAdapter(this.ctx, this.canvas.clientWidth / (viewport.right - viewport.left), -viewport.left, -viewport.top)
         this.gameInfo = {... this.gameInfo, viewport: viewport};
     }
 
@@ -72,7 +77,7 @@ class Drawer {
         this.contextAdapter.arc(x, y, radius, 0, 2 * Math.PI);
         this.ctx.stroke();
     }
-    
+
     fc_types = "color float float float";
     fc(color, x, y, radius){
         this.ctx.fillStyle = color;
@@ -169,6 +174,7 @@ class Drawer {
             grid.cellHeight
         );
     }
+
     fgrid_types = "color id int*";
     fgrid(color, gridId, ...cells){
         let grid = this.grids[gridId];

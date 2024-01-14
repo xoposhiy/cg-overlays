@@ -37,7 +37,7 @@ function main() {
 				if (isPlayerWindow()){
 					gameName = "unknown";
 					if (t.data.gameName)
-						gameName = t.data.gameName;
+						gameName = t.data.gameName.replace(/\s/g, '');
 					else{
 						console.log(t.data);
 					}
@@ -89,7 +89,7 @@ function main() {
 			if (!ev.ctrlKey) return;
 			let c = canvas.getContext('2d');
 			let t = c.getTransform();
-			c.resetTransform();			
+			c.resetTransform();
 			let x = Math.round(ev.clientX * 16000 / canvas.clientWidth);
 			let y = Math.round(ev.clientY * 9000 / canvas.clientHeight);
 			let message = x  + " " + y;
@@ -179,6 +179,13 @@ function main() {
 			}
 			let argTypes = ctx[fn + '_types'];
 			if (argTypes === undefined) throw new Error("No arg types for " + fn);
+			if (fn == 'game') {
+				let gameName = args.split(' ', 1)[0];
+				let knownGame = knownGames[gameName];
+				if (knownGame && knownGame.viewport_types) {
+					argTypes += ' ' + knownGame.viewport_types;
+				}
+			}
 			try {
 				//console.log(fn, args, argTypes);
 				f.apply(ctx, parse(args, argTypes));
@@ -214,11 +221,11 @@ function main() {
 	}
 
 	function parse(args, typesString){
-		
+
 		let types = typesString.split(' ');
 		let i = 0;
 		let iType = 0;
-		
+
 		function readUntilSpace(){
 			let res = '';
 			while(i < args.length && args[i] != ' '){
@@ -227,7 +234,7 @@ function main() {
 			}
 			if (i < args.length)
 				i++;
-			return res;			
+			return res;
 		}
 
 		function parseOne(type){
@@ -262,7 +269,13 @@ function main() {
 			let value = parseOne(type);
 			result.push(value);
 		}
-		return result;	
+		if (typesString && iType < types.length && !types[iType].endsWith('*')) {
+			throw new Error(`Expected ${types[iType]} for ${iType} param, but got nothing`);
+		}
+		if (i < args.length) {
+			throw new Error(`Too many arguments: ${args.substring(i)}`);
+		}
+		return result;
 	}
 }
 

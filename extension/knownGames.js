@@ -1,6 +1,6 @@
 // Feel free to send PR with other games settings.
 const knownGames = {
-    
+
     // Seabed security
     FC2023: {
         viewport: createViewport(
@@ -13,7 +13,7 @@ const knownGames = {
         ),
     },
 
-    "Search Race": {
+    SearchRace: {
         viewport: createViewport((width = 16000), (height = 9000)),
     },
 
@@ -54,7 +54,7 @@ const knownGames = {
             (screenshotWidth = 1920),
             (fieldLeft = 522),
             (fieldTop = 166),
-            (fieldRight = 1400)            
+            (fieldRight = 1400)
         ),
         playerStepEveryFrame: true,
     },
@@ -90,9 +90,26 @@ const knownGames = {
             (fieldTop = 0),
             (fieldRight = 1700)
         ),
-    }
+    },
 
+    CodeOfKutulu: {
+        viewport_types: "int int",
+        viewport_fn: function(ctx, width, height) {  // width and height are integers corresponding to the size of map in cells
+            let block = 1026 / height;
 
+            // use "map" as grid id for @fgrid and @fcell
+            ctx.grid('map', height, width, 0, 0, block, block);
+
+            return createViewportFromScreenshot(
+                (fieldLogicalWidth = block * width),
+                (screenshotWidth = 16000),
+                (fieldLeft = 16000 * (1 - block * width / 1824)),
+                (fieldTop = 0),
+                (fieldRight = 16000),
+            );
+        },
+        playerStepEveryFrame: true,
+    },
 };
 
 function createViewport(
