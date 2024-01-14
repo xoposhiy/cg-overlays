@@ -59,12 +59,12 @@ For some [known games](extension/knownGames.js) you do not need these instructio
 
 - `!game [gameName]` sets game name. Some known games can't be detected by extension. You should help it to recognize game with this instruction (OceanOfCode, GameOfDrones, ...).
 - `!stepEveryFrame` may be needed for some games. In some turn based games visualizer steps on every frame, not only on keyframes. So you need this instruction to sync steps in visualizer.
-- `!vp [logicalFieldWidth] [screenFieldTop] [screenFieldRight] [screenFieldBottom]` sets the viewport. See below.
+- `!vp [logicalFieldWidth] [screenFieldLeft] [screenFieldTop] [screenFieldRight]` sets the viewport. See below.
 - `!o [opacity]` sets global opacity (in range 0 .. 1.0) for overlay canvas.
 
 ### How to use vp instruction?
 
-`!vp [logicalFieldWidth] [screenFieldTop] [screenFieldRight] [screenFieldBottom]`
+`!vp [logicalFieldWidth] [screenFieldLeft] [screenFieldTop] [screenFieldRight]`
 
 `logicalFieldWidth` - logical width of the field in game units, as specified in the statements.
 
