@@ -179,13 +179,6 @@ function main() {
 			}
 			let argTypes = ctx[fn + '_types'];
 			if (argTypes === undefined) throw new Error("No arg types for " + fn);
-			if (fn == 'game') {
-				let gameName = args.split(' ', 1)[0];
-				let knownGame = knownGames[gameName];
-				if (knownGame && knownGame.viewport_types) {
-					argTypes += ' ' + knownGame.viewport_types;
-				}
-			}
 			try {
 				//console.log(fn, args, argTypes);
 				f.apply(ctx, parse(args, argTypes));
@@ -269,7 +262,7 @@ function main() {
 			let value = parseOne(type);
 			result.push(value);
 		}
-		if (typesString && iType < types.length && !types[iType].endsWith('*')) {
+		if (typesString && iType < types.length && !types[iType].endsWith('*') && !types[iType].endsWith('?')) {
 			throw new Error(`Expected ${types[iType]} for ${iType} param, but got nothing`);
 		}
 		if (i < args.length) {

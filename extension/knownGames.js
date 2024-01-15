@@ -93,8 +93,7 @@ const knownGames = {
     },
 
     CodeOfKutulu: {
-        viewport_types: "int int",
-        viewport_fn: function(ctx, width, height) {  // width and height are integers corresponding to the size of map in cells
+        viewport: function(ctx, width, height) {  // width and height are integers corresponding to the size of map in cells
             let block = 1026 / height;
 
             // use "map" as grid id for @fgrid and @fcell

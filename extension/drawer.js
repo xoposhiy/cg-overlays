@@ -11,14 +11,14 @@ class Drawer {
         console.log(this.gameInfo?.viewport);
     }
 
-    game_types = 'name';
-    game(gameName, ...args) {
+    game_types = 'name int? int?';
+    game(gameName, width, height) {
         let knownGame = knownGames[gameName];
         this.gameInfo = knownGame;
         if (this.gameInfo) {
             let viewport;
-            if (knownGame.viewport_fn && !knownGame.viewport) {
-                viewport = knownGame.viewport_fn(this, ...args);
+            if (typeof knownGame.viewport == 'function') {
+                viewport = knownGame.viewport(this, width, height);
             } else {
                 viewport = knownGame.viewport;
             }
@@ -86,7 +86,7 @@ class Drawer {
         this.ctx.fill();
     }
 
-    tc_types = " color float float float";
+    tc_types = "color float float float";
     tc(color, x, y, radius){
         this.ctx.fillStyle = color;
         this.ctx.globalAlpha = 0.7;
