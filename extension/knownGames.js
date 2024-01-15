@@ -108,7 +108,6 @@ const knownGames = {
                 (fieldRight = 16000),
             );
         },
-        playerStepEveryFrame: true,
     },
 };
 

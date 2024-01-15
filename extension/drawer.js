@@ -192,4 +192,21 @@ class Drawer {
             );
         }
     }
+
+    lgrid_types = "color id int*";
+    lgrid(color, gridId, ...cells) {
+        let grid = this.grids[gridId];
+        if (!grid) return;
+        let ps = [];
+        for(let i = 0; i < cells.length; i++){
+            let index = cells[i];
+            let row = Math.floor(index / grid.nCols);
+            let col = index % grid.nCols;
+            let x = grid.left + grid.cellWidth * (col + 0.5);
+            let y = grid.top + grid.cellHeight * (row + 0.5);
+            ps.push(x);
+            ps.push(y);
+        }
+        this.l(color, ...ps);
+    }
 }

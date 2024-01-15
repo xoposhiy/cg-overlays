@@ -48,6 +48,7 @@ The following instructions are supported (all @-instructions can be used as !-in
 
 - `!grid [gridId] [nRows] [nCols] [left] [top] [cellWidth] [cellHeight]` - define grid, draws nothing.
 - `@fgrid [color] [gridId] [cell1] [cell2] ...` - fill grid cells with numbers cell1, cell2, ... Cell (x, y) has number x + nCols*y.
+- `@lgrid [color] [gridId] [cell1] [cell2] ...` - draws a line path through center of cells.
 - `@fcell [color] [gridId] [col] [row]` - fill grid cell with specified coordinates in the grid.
 
 #### Text
