@@ -1,8 +1,8 @@
 {
 	"manifest_version": 3,
 	"name": "CG Overlays",
-	"description": "Codingame with your own overlays in visualizer",
-	"version": "1.1",
+	"description": "Codingame with your own overlays in visualizer.",
+	"version": "1.2",
 	"icons": {
 		"16": "layers16.png",
 		"32": "layers32.png",
