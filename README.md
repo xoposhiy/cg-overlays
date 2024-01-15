@@ -59,23 +59,24 @@ The following instructions are supported (all @-instructions can be used as !-in
 For some [known games](extension/knownGames.js) you do not need these instructions. But if something is not working - use them!
 
 - `!game [gameName]` sets game name. Some known games can't be detected by extension. You should help it to recognize game with this instruction (OceanOfCode, GameOfDrones, ...).
+- `!game [gameName] [width] [height]` sets game name and size of game field for games with varying field size (e.g. CodeOfKutulu).
 - `!stepEveryFrame` may be needed for some games. In some turn based games visualizer steps on every frame, not only on keyframes. So you need this instruction to sync steps in visualizer.
-- `!vp [logicalFieldWidth] [screenFieldLeft] [screenFieldTop] [screenFieldRight]` sets the viewport. See below.
+- `!vp [logicalFieldWidth] [logicalFieldHeight] [screenFieldLeft] [screenFieldTop] [screenFieldRight]` sets the viewport. See below.
 - `!o [opacity]` sets global opacity (in range 0 .. 1.0) for overlay canvas.
 
 ### How to use vp instruction?
 
-`!vp [logicalFieldWidth] [screenFieldLeft] [screenFieldTop] [screenFieldRight]`
+`!vp [logicalFieldWidth] [logicalFieldHeight] [screenFieldLeft] [screenFieldTop] [screenFieldRight]`
 
-`logicalFieldWidth` - logical width of the field in game units, as specified in the statements.
+`logicalFieldWidth` and `logicalFieldHeight` - logical width of the field in game units, as specified in the statements.
 
 All other three parameters — screen coordinates of the field rectangle if total screen width is resized to 16000.
 To find this coordinates you can click on the visualizer, hold CTRL-key and move mouse pointer to the field corners.
 You will see coordinates in the top-left corner of the visualizer.
 
-For example, for OceanOfCode you can use `!vp 900 4270 770 11730` instruction:
+For example, for OceanOfCode you can use `!vp 15 15 4270 770 11730` instruction:
 
-- 15x15 cells field will be 900x900 logical units (60 units per cell).
+- 15x15 cells field (for grid game, the cell size equal to 1 recommended).
 - In the top-left corner of the field `4270 770` will be shown.
 - In the top-right corner of the field `4270 11730` will be shown.
 
