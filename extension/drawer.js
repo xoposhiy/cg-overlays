@@ -6,9 +6,17 @@ class Drawer {
         this.contextAdapter = new ContextAdapter(this.ctx, 1.0, 0, 0);
         this.fontName = 'Arial';
         this.gameInfo = knownGames[gameName];
+        this.gameName = gameName;
         this.grids = {};
         console.log("Detected GameName: " + gameName);
-        console.log(this.gameInfo?.viewport);
+        console.log("GameInfo:", this.gameInfo);
+        if (this.gameInfo){
+            const viewport = this.gameInfo.viewport;
+            if (typeof viewport == 'object'){
+                this.setViewport(viewport);
+                this.createDefaultGrid();
+            }
+        }
     }
 
     game_types = 'name int? int?';
@@ -23,20 +31,34 @@ class Drawer {
                 viewport = knownGame.viewport;
             }
             this.setViewport(viewport);
+            this.createDefaultGrid();
         } else {
             throw new Error(`Unknown game ${gameName}. Use !vp instruction to set viewport manually.`);
         }
+        if (gameName != this.gameName){
+            this.gameName = gameName;
+            console.log(`GameName set to: ${gameName}`);
+            console.log("GameInfo:", this.gameInfo);
+        }
     }
 
+    createDefaultGrid() {
+        const viewport = this.gameInfo.viewport;
+        if (this.gameInfo.isGridGame && viewport && typeof viewport == 'object') {
+            this.grid('map', viewport.fieldHeight, viewport.fieldWidth, 0, 0, 1, 1);
+        }
+    }
+    
     stepEveryFrame_types = '';
     stepEveryFrame() {
         this.gameInfo = {... this.gameInfo, playerStepEveryFrame: true};
     }
 
-    vp_types = 'int int int int';
-    vp(fieldWidth, left, top, right) {
-        let viewport = createViewportFromScreenshot(fieldWidth, 16000, left, top, right);
+    vp_types = 'int int int int int';
+    vp(fieldWidth, fieldHeight, left, top, right) {
+        let viewport = createViewportFromScreenshot(fieldWidth, fieldHeight, 16000, left, top, right);
         this.setViewport(viewport);
+        console.log(this.gameInfo);
     }
 
     setViewport(viewport) {
@@ -165,7 +187,7 @@ class Drawer {
     fcell_types = "color id int int";
     fcell(color, gridId, col, row){
         let grid = this.grids[gridId];
-        if (!grid) return;
+        if (!grid) throw new Error(`Unknown grid id: ${gridId}`);
         this.ctx.fillStyle = color;
         this.contextAdapter.fillRect(
             grid.left + grid.cellWidth * col,
@@ -178,7 +200,7 @@ class Drawer {
     fgrid_types = "color id int*";
     fgrid(color, gridId, ...cells){
         let grid = this.grids[gridId];
-        if (!grid) return;
+        if (!grid) throw new Error(`Unknown grid id: ${gridId}`);
         this.ctx.fillStyle = color;
         for(let i = 0; i < cells.length; i++){
             let index = cells[i];
@@ -196,7 +218,7 @@ class Drawer {
     lgrid_types = "color id int*";
     lgrid(color, gridId, ...cells) {
         let grid = this.grids[gridId];
-        if (!grid) return;
+        if (!grid) throw new Error(`Unknown grid id: ${gridId}`);
         let ps = [];
         for(let i = 0; i < cells.length; i++){
             let index = cells[i];

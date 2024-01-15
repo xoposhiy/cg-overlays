@@ -2,18 +2,18 @@ function main() {
 	console.log(`CG Overlays STARTED at ${window.location}`);
 
 	let rawFrames;
-	let ctx;
+	let drawer;
 	let frameIndex;
 	let onOffButton;
 	let gameName;
 
 	window.addEventListener("keydown", function(e) {
-		if (ctx?.canvas == null) return;
+		if (drawer?.canvas == null) return;
 		if (e.ctrlKey) {
-			ctx.canvas.style.pointerEvents = 'auto';
+			drawer.canvas.style.pointerEvents = 'auto';
 		}
 		else{
-			ctx.canvas.style.pointerEvents = 'none';
+			drawer.canvas.style.pointerEvents = 'none';
 		}
 	}, true);
 
@@ -36,12 +36,11 @@ function main() {
 			else if ("viewerOptions" === t.data.type){
 				if (isPlayerWindow()){
 					gameName = "unknown";
-					if (t.data.gameName)
+					if (t.data.gameName && t.data.gameName != "CodinGame")
 						gameName = t.data.gameName.replace(/\s/g, '');
 					else{
-						console.log(t.data);
+						console.log("Not detectable GameName", t.data);
 					}
-					console.log("GameName: " + gameName);
 					initialize(gameName);
 				}
 				else{
@@ -63,11 +62,11 @@ function main() {
 		}));
 
 	function deInitialize(){
-		if (ctx && ctx.canvas != null){
-			ctx.canvas.remove();
-			ctx.canvas = null;
+		if (drawer && drawer.canvas != null){
+			drawer.canvas.remove();
+			drawer.canvas = null;
 		}
-		ctx = null;
+		drawer = null;
 	}
 
 	function initialize(gameName){
@@ -120,7 +119,7 @@ function main() {
 			onOffButton.style.backgroundColor = 'white';
 		}
 		canvas.insertAdjacentElement('afterEnd', onOffButton);
-		ctx = new Drawer(canvas, originalCanvas, gameName);
+		drawer = new Drawer(canvas, originalCanvas, gameName);
 	}
 
 	function getKeyFrameIndex(keyFrameIndex){
@@ -154,34 +153,30 @@ function main() {
 	async function renderOverlay(newFrameIndex, progressValue) {
 		if (newFrameIndex == frameIndex && progressValue != 1) return;
 		frameIndex = newFrameIndex;
-		if (ctx == null) return;
+		if (drawer == null) return;
 		let options = await chrome.storage?.local?.get(['syncWithVisual']);
 
-		ctx.canvas.width = ctx.originalCanvas.clientWidth;
-		ctx.canvas.height = ctx.originalCanvas.clientHeight;
+		drawer.canvas.width = drawer.originalCanvas.clientWidth;
+		drawer.canvas.height = drawer.originalCanvas.clientHeight;
 		let delta = options?.syncWithVisual && progressValue == 1 ? 1 : 0;
 		console.log("renderOverlay frame = " + frameIndex + " delta = " + delta);
-		let instructions = getInstructions(frameIndex + delta, ctx.gameInfo);
+		let instructions = getInstructions(frameIndex + delta, drawer.gameInfo);
 		let errors = [];
-		if (ctx.gameInfo){
-			let viewport = ctx.gameInfo.viewport;
-			ctx.setViewport(viewport);
-		}
 		for(let instruction of instructions){
 			let firstSpaceIndex = instruction.indexOf(' ');
 			if (firstSpaceIndex < 0) firstSpaceIndex = instruction.length;
 			const fn = instruction.slice(1, firstSpaceIndex);
 			const args = instruction.substring(firstSpaceIndex+1);
-			const f = ctx[fn];
+			const f = drawer[fn];
 			if (f == undefined) {
 				errors.push("Unknown instruction: " + instruction);
 				continue;
 			}
-			let argTypes = ctx[fn + '_types'];
+			let argTypes = drawer[fn + '_types'];
 			if (argTypes === undefined) throw new Error("No arg types for " + fn);
 			try {
 				//console.log(fn, args, argTypes);
-				f.apply(ctx, parse(args, argTypes));
+				f.apply(drawer, parse(args, argTypes));
 			}
 			catch(e) {
 				errors.push(`Error executing '${instruction}'`);
@@ -190,24 +185,25 @@ function main() {
 				continue;
 			}
 		}
-		if (instructions.length > 0 && !ctx.gameInfo){
+		if (instructions.length > 0 && !drawer.gameInfo){
 			errors.push(`Unknown game '${gameName}'! Use one of two options:`);
-			errors.push(`  1. Use '!game <gameName>' instruction for known game`);
+			errors.push(`  1. Use '!game <gameName> <width>? <height>?' instruction for known game`);
 			errors.push("  2. Use '!vp fieldWidth left top right' for setting viewport manually");
 			errors.push("     Hold CTRL key and click to visualizer to find out coordinates of the game field corners for vp instruction.");
 		}
 		if (errors.length > 0){
-			ctx.ctx.resetTransform();
-			ctx.canvas.style.opacity = 0.7;
-			ctx.ctx.fillStyle = "rgba(0,0,255,0.5)";
-			ctx.ctx.fillRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
-			ctx.ctx.fillStyle = "white";
-			ctx.ctx.font = "14px monospace";
+			drawer.ctx.resetTransform();
+			drawer.canvas.style.opacity = 0.7;
+			drawer.ctx.fillStyle = "rgba(0,0,255,0.5)";
+			drawer.ctx.fillRect(0, 0, drawer.canvas.clientWidth, drawer.canvas.clientHeight);
+			drawer.ctx.fillStyle = "white";
+			drawer.ctx.font = "14px monospace";
 			let y = 64;
-			ctx.ctx.fillText("CG Overlay errors:", y, 48);
+			drawer.ctx.fillText("CG Overlay errors:", y, 48);
 			y+=16;
 			for(let error of errors){
-				ctx.ctx.fillText(error, 64, y);
+				drawer.ctx.fillText(error, 64, y);
+				console.log(error);
 				y+=16;
 			}
 		}
