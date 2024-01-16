@@ -19,6 +19,16 @@ class Drawer {
         }
     }
 
+    resized(){
+        this.canvas.style.top = this.originalCanvas.style.top;
+        this.canvas.style.left = this.originalCanvas.style.left;
+        this.canvas.style.width = this.originalCanvas.style.width;
+        this.canvas.style.height = this.originalCanvas.style.height;
+        let viewport = this.gameInfo.viewport;
+        let k = this.canvas.clientWidth / (viewport.right - viewport.left);
+        this.contextAdapter = new ContextAdapter(this.ctx, k, -viewport.left, -viewport.top)
+    }
+
     game_types = 'name int? int?';
     game(gameName, width, height) {
         let knownGame = knownGames[gameName];
@@ -62,12 +72,8 @@ class Drawer {
     }
 
     setViewport(viewport) {
-        this.canvas.style.top = this.originalCanvas.style.top;
-        this.canvas.style.left = this.originalCanvas.style.left;
-        this.canvas.style.width = this.originalCanvas.style.width;
-        this.canvas.style.height = this.originalCanvas.style.height;
-        this.contextAdapter = new ContextAdapter(this.ctx, this.canvas.clientWidth / (viewport.right - viewport.left), -viewport.left, -viewport.top)
         this.gameInfo = {... this.gameInfo, viewport: viewport};
+        this.resized();
     }
 
     r_types = 'color float float float float';
@@ -214,7 +220,32 @@ class Drawer {
             );
         }
     }
-
+    
+    // cell badge
+    bgrid_types = "color gridId id int*";
+    bgrid(color, gridId, pos, ...cells){
+        let grid = this.grids[gridId];
+        if (!grid) throw new Error(`Unknown grid id: ${gridId}`);
+        this.ctx.fillStyle = color;
+        let badgeSize = grid.cellWidth / 3;
+        let shiftX = 0;
+        let shiftY = 0;
+        if (pos.includes('l')) shiftX = -badgeSize;
+        if (pos.includes('r')) shiftX = badgeSize;
+        if (pos.includes('t')) shiftY = -badgeSize;
+        if (pos.includes('b')) shiftY = badgeSize;
+        for(let i = 0; i < cells.length; i++){
+            let index = cells[i];
+            let row = Math.floor(index / grid.nCols);
+            let col = index % grid.nCols;
+            this.contextAdapter.fillRect(
+                grid.left + grid.cellWidth * (col + 0.5) + shiftX - badgeSize/2,
+                grid.top + grid.cellHeight * (row + 0.5) + shiftY - badgeSize/2,
+                badgeSize,
+                badgeSize
+            );
+        }
+    }
     lgrid_types = "color id int*";
     lgrid(color, gridId, ...cells) {
         let grid = this.grids[gridId];

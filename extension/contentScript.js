@@ -158,6 +158,7 @@ function main() {
 
 		drawer.canvas.width = drawer.originalCanvas.clientWidth;
 		drawer.canvas.height = drawer.originalCanvas.clientHeight;
+		drawer.resized();
 		let delta = options?.syncWithVisual && progressValue == 1 ? 1 : 0;
 		console.log("renderOverlay frame = " + frameIndex + " delta = " + delta);
 		let instructions = getInstructions(frameIndex + delta, drawer.gameInfo);
