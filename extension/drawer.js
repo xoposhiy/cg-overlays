@@ -19,13 +19,19 @@ class Drawer {
         }
     }
 
+    isViewportInitialized() {
+        return this.gameInfo && typeof this.gameInfo.viewport == 'object';
+    }
+
     resized(){
         this.canvas.style.top = this.originalCanvas.style.top;
         this.canvas.style.left = this.originalCanvas.style.left;
         this.canvas.style.width = this.originalCanvas.style.width;
         this.canvas.style.height = this.originalCanvas.style.height;
+        this.canvas.width = this.originalCanvas.width;
+        this.canvas.height = this.originalCanvas.height;
         let viewport = this.gameInfo.viewport;
-        let k = this.canvas.clientWidth / (viewport.right - viewport.left);
+        let k = this.canvas.width / (viewport.right - viewport.left);
         this.contextAdapter = new ContextAdapter(this.ctx, k, -viewport.left, -viewport.top)
     }
 
@@ -36,6 +42,8 @@ class Drawer {
         if (this.gameInfo) {
             let viewport;
             if (typeof knownGame.viewport == 'function') {
+                if (width == undefined || height == undefined) 
+                    throw new Error(`width and height arguments are required for this game`);
                 viewport = knownGame.viewport(this, width, height);
             } else {
                 viewport = knownGame.viewport;
@@ -177,7 +185,7 @@ class Drawer {
 
     clr_types = "";
     clr(){
-        this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     o_types = "float";

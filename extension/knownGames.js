@@ -122,8 +122,8 @@ const knownGames = {
         viewport: function(ctx, width, height) {  // width and height are integers corresponding to the size of map in cells
             let block = 1026 / height;
             return createViewportFromScreenshot(
-                (fieldLogicalWidth = width),
-                (fieldLogicalHeight = height),
+                (fieldLogicalWidth = +width),
+                (fieldLogicalHeight = +height),
                 (screenshotWidth = 16000),
                 (fieldLeft = 16000 * (1 - block * width / 1824)),
                 (fieldTop = 0),

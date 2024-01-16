@@ -5,7 +5,6 @@ function main() {
 	let drawer;
 	let frameIndex;
 	let onOffButton;
-	let gameName;
 
 	window.addEventListener("keydown", function(e) {
 		if (drawer?.canvas == null) return;
@@ -26,6 +25,7 @@ function main() {
 			if (onOffButton && !onOffButton.checked) return;
 			//if (t.data.type) console.log(t.data.type, t.data);
 			if ("resize" == t.data.type) {
+				console.log(t.data.type, t.data);
 				if (isPlayerWindow()){
 					this.setTimeout(async () => await renderOverlay(frameIndex, 1), 1000);
 				}
@@ -34,8 +34,9 @@ function main() {
 				}
 			}
 			else if ("viewerOptions" === t.data.type){
+				console.log(t.data.type, t.data);
 				if (isPlayerWindow()){
-					gameName = "unknown";
+					let gameName = "unknown";
 					if (t.data.gameName && t.data.gameName != "CodinGame")
 						gameName = t.data.gameName.replace(/\s/g, '');
 					else{
@@ -49,7 +50,8 @@ function main() {
 			}
 			else if ("frames" === t.data.type && t.data.gameInfo){
 				rawFrames = t.data.gameInfo.frames;
-				console.log("Raw frames:", rawFrames)
+				console.log("Raw frames:", rawFrames);
+				if (drawer) drawer = new Drawer(drawer.canvas, drawer.originalCanvas, drawer.gameName);
 			} else if ("progress" == t.data.type){
 				if (isPlayerWindow()){
 					// console.log(t.data);
@@ -87,8 +89,6 @@ function main() {
 		canvas.addEventListener('mousemove', ev => {
 			if (!ev.ctrlKey) return;
 			let c = canvas.getContext('2d');
-			let t = c.getTransform();
-			c.resetTransform();
 			let x = Math.round(ev.clientX * 16000 / canvas.clientWidth);
 			let y = Math.round(ev.clientY * 9000 / canvas.clientHeight);
 			let message = x  + " " + y;
@@ -97,7 +97,6 @@ function main() {
 			c.fillRect(0, 0, w+20, 36);
 			c.fillStyle = "white";
 			c.fillText(message, 10, 32);
-			c.setTransform(t);
 		}, true);
 		if (!onOffButton){
 			onOffButton = document.createElement('input');
@@ -155,12 +154,9 @@ function main() {
 		frameIndex = newFrameIndex;
 		if (drawer == null) return;
 		let options = await chrome.storage?.local?.get(['syncWithVisual']);
-
-		drawer.canvas.width = drawer.originalCanvas.clientWidth;
-		drawer.canvas.height = drawer.originalCanvas.clientHeight;
-		drawer.resized();
 		let delta = options?.syncWithVisual && progressValue == 1 ? 1 : 0;
 		console.log("renderOverlay frame = " + frameIndex + " delta = " + delta);
+		drawer.clr();
 		let instructions = getInstructions(frameIndex + delta, drawer.gameInfo);
 		let errors = [];
 		for(let instruction of instructions){
@@ -186,27 +182,16 @@ function main() {
 				continue;
 			}
 		}
-		if (instructions.length > 0 && !drawer.gameInfo){
-			errors.push(`Unknown game '${gameName}'! Use one of two options:`);
-			errors.push(`  1. Use '!game <gameName> <width>? <height>?' instruction for known game`);
-			errors.push("  2. Use '!vp fieldWidth left top right' for setting viewport manually");
-			errors.push("     Hold CTRL key and click to visualizer to find out coordinates of the game field corners for vp instruction.");
+		if (instructions.length > 0 && !drawer.isViewportInitialized()){
+			errors = [
+				`Viewport is unknown. Use one of two options:`,
+				`  1. Use '!game <gameName> <width>? <height>?' instruction for known game`,
+				"  2. Use '!vp' instruction for setting viewport manually",
+				"     Hold CTRL key and click to visualizer to find out coordinates of the game field corners for vp instruction."
+			].concat(errors);
 		}
 		if (errors.length > 0){
-			drawer.ctx.resetTransform();
-			drawer.canvas.style.opacity = 0.7;
-			drawer.ctx.fillStyle = "rgba(0,0,255,0.5)";
-			drawer.ctx.fillRect(0, 0, drawer.canvas.clientWidth, drawer.canvas.clientHeight);
-			drawer.ctx.fillStyle = "white";
-			drawer.ctx.font = "14px monospace";
-			let y = 64;
-			drawer.ctx.fillText("CG Overlay errors:", y, 48);
-			y+=16;
-			for(let error of errors){
-				drawer.ctx.fillText(error, 64, y);
-				console.log(error);
-				y+=16;
-			}
+			bsod(drawer, errors);
 		}
 	}
 
@@ -266,6 +251,24 @@ function main() {
 			throw new Error(`Too many arguments: ${args.substring(i)}`);
 		}
 		return result;
+	}
+}
+
+function bsod(drawer, errors) {
+	drawer.canvas.width = drawer.canvas.clientWidth;
+	drawer.canvas.height = drawer.canvas.clientHeight;
+	let ctx = drawer.canvas.getContext('2d');
+	ctx.fillStyle = "rgba(0,0,255,0.9)";
+	ctx.fillRect(0, 0, drawer.canvas.width, drawer.canvas.height);
+	ctx.fillStyle = "white";
+	ctx.font = "16px monospace";
+	let y = 24;
+	ctx.fillText("CG Overlay errors:", 32, y);
+	y += 24;
+	for (let error of errors) {
+		ctx.fillText(error, 32, y);
+		console.log(error);
+		y += 24;
 	}
 }
 
