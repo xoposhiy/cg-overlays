@@ -78,6 +78,10 @@ function main() {
 			return;
 		}
 		let originalCanvas = canvasContainer.children[0];
+		let existingOverlay = document.getElementById('cgOverlayCanvas');
+		if (existingOverlay != null) {
+			existingOverlay.remove();
+		}
 		let canvas = document.createElement('canvas');
 		canvas.id = "cgOverlayCanvas";
 		canvas.style.position = 'absolute';
