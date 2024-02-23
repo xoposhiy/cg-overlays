@@ -134,9 +134,9 @@ Stderr is available for your own bots only. That's why no overlays for other pla
 Some games may not work properly because the wrong viewport. You can set it manually with `@vp` instruction. But would be better to make a pull-request with proper changes in [knownGames.js](https://github.com/xoposhiy/cg-overlays/blob/main/extension/knownGames.js).
 
 ## Turning off
-Small checkbox in top-left corder of visualizer will disable overlays.
+Small checkbox in the top-left corner of visualizer disables extension.
 
-Also you can disable extension.
+Also you can disable the extension itself.
 
 ## How to install extension
 
