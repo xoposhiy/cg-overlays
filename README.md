@@ -92,11 +92,7 @@ Color can be specified in CSS color format (but no spaces please!). Some example
 
 Wrong color format will not be reported, but will be ignored.
 
-## Errors checking
-
-Syntax errors will be reported on the BSOD :)
-
-### Sample stderr output
+## Sample stderr output
 
 ```
 !game CodeBusters
@@ -117,6 +113,10 @@ Syntax errors will be reported on the BSOD :)
 Result:
 
 ![result](screenshot3.png)
+
+## Errors checking
+
+Syntax errors will be reported on the BSOD :)
 
 ## Synchronize overlay with visualized state
 
